@@ -6,7 +6,6 @@ import { WeatherData, LocationState, TemperatureUnit } from '../types/weather';
 
 const CACHE_KEY = '@weather_cache';
 const UNIT_KEY = '@weather_unit';
-const LOCALE_KEY = '@weather_locale';
 
 export function useWeather() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -22,7 +21,6 @@ export function useWeather() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
   const [unit, setUnit] = useState<TemperatureUnit>('C');
-  const [dateLocale, setDateLocale] = useState<DateLocale>('system');
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
@@ -138,13 +136,6 @@ export function useWeather() {
     }
   };
 
-  const toggleDateLocale = async (newLocale: DateLocale) => {
-    setDateLocale(newLocale);
-    try {
-      await AsyncStorage.setItem(LOCALE_KEY, newLocale);
-    } catch (e) {}
-  };
-
   useEffect(() => {
     let intervalId: ReturnType<typeof setInterval>;
 
@@ -155,11 +146,6 @@ export function useWeather() {
         if (savedUnit === 'F') {
           loadedUnit = 'F';
           setUnit('F');
-        }
-
-        const savedLocale = await AsyncStorage.getItem(LOCALE_KEY) as DateLocale | null;
-        if (savedLocale) {
-          setDateLocale(savedLocale);
         }
 
         const cachedStr = await AsyncStorage.getItem(CACHE_KEY);
@@ -251,7 +237,5 @@ export function useWeather() {
     handleCurrentLocation,
     onRefresh,
     toggleUnit,
-    dateLocale,
-    toggleDateLocale,
   };
 }

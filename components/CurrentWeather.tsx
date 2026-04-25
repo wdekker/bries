@@ -2,17 +2,16 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Wind } from 'lucide-react-native';
 import { getWeatherInfo } from '../utils/weather';
-import { WeatherData, DateLocale } from '../types/weather';
+import { WeatherData } from '../types/weather';
 
 interface CurrentWeatherProps {
   weatherData: WeatherData;
   cityName: string;
   lastFetchedTime: Date | null;
   isDark: boolean;
-  dateLocale: DateLocale;
 }
 
-export function CurrentWeather({ weatherData, cityName, lastFetchedTime, isDark, dateLocale }: CurrentWeatherProps) {
+export function CurrentWeather({ weatherData, cityName, lastFetchedTime, isDark }: CurrentWeatherProps) {
   const currentInfo = getWeatherInfo(weatherData.current_weather.weathercode);
   const CurrentIcon = currentInfo.icon;
   
@@ -25,7 +24,7 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, isDark,
     try {
       const deviceTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       if (weatherData.timezone !== deviceTz) {
-        localTimeStr = new Date().toLocaleTimeString(dateLocale === 'system' ? undefined : dateLocale, { 
+        localTimeStr = new Date().toLocaleTimeString(undefined, { 
           timeZone: weatherData.timezone, 
           hour: '2-digit', 
           minute: '2-digit' 
@@ -38,8 +37,8 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, isDark,
     <View style={styles.currentWeather}>
       <Text style={[styles.cityText, { color: textColor }]}>{cityName}</Text>
       <Text style={[styles.dateText, { color: subTextColor, marginBottom: localTimeStr ? 4 : 20 }]}>
-        Today, {new Date().toLocaleDateString(dateLocale === 'system' ? undefined : dateLocale, { day: 'numeric', month: 'long' })}
-        {lastFetchedTime ? ` • Updated ${lastFetchedTime.toLocaleTimeString(dateLocale === 'system' ? undefined : dateLocale, { hour: '2-digit', minute: '2-digit' })}` : ''}
+        Today, {new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long' })}
+        {lastFetchedTime ? ` • Updated ${lastFetchedTime.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}` : ''}
       </Text>
       {localTimeStr && (
         <Text style={{ color: subTextColor, fontSize: 14, fontWeight: '500', marginBottom: 20 }}>

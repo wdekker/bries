@@ -1,19 +1,17 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { X } from 'lucide-react-native';
-import { TemperatureUnit, DateLocale } from '../types/weather';
+import { TemperatureUnit } from '../types/weather';
 
 interface SettingsModalProps {
   visible: boolean;
   onClose: () => void;
   unit: TemperatureUnit;
   onToggleUnit: (unit: TemperatureUnit) => void;
-  dateLocale: DateLocale;
-  onToggleDateLocale: (locale: DateLocale) => void;
   isDark: boolean;
 }
 
-export function SettingsModal({ visible, onClose, unit, onToggleUnit, dateLocale, onToggleDateLocale, isDark }: SettingsModalProps) {
+export function SettingsModal({ visible, onClose, unit, onToggleUnit, isDark }: SettingsModalProps) {
   return (
     <Modal visible={visible} animationType="fade" transparent={true}>
       <View style={styles.modalOverlay}>
@@ -46,40 +44,6 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, dateLocale
               onPress={() => onToggleUnit('F')}
             >
               <Text style={{ color: unit === 'F' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>Fahrenheit (°F)</Text>
-            </TouchableOpacity>
-          </View>
-
-          <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 12 }]}>Date Format</Text>
-          <View style={styles.unitToggleRow}>
-            <TouchableOpacity 
-              style={[
-                styles.unitBtn, 
-                dateLocale === 'system' ? { backgroundColor: '#38bdf8' } : { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
-                { marginRight: 5 }
-              ]}
-              onPress={() => onToggleDateLocale('system')}
-            >
-              <Text style={{ color: dateLocale === 'system' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>System</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[
-                styles.unitBtn, 
-                dateLocale === 'en-US' ? { backgroundColor: '#38bdf8' } : { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
-                { marginHorizontal: 2.5 }
-              ]}
-              onPress={() => onToggleDateLocale('en-US')}
-            >
-              <Text style={{ color: dateLocale === 'en-US' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>US</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[
-                styles.unitBtn, 
-                dateLocale === 'en-GB' ? { backgroundColor: '#38bdf8' } : { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
-                { marginLeft: 5 }
-              ]}
-              onPress={() => onToggleDateLocale('en-GB')}
-            >
-              <Text style={{ color: dateLocale === 'en-GB' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>UK</Text>
             </TouchableOpacity>
           </View>
         </View>

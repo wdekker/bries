@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { getWeatherInfo } from '../utils/weather';
-import { WeatherData, DateLocale } from '../types/weather';
+import { WeatherData } from '../types/weather';
 
 interface DailyForecastProps {
   daily: WeatherData['daily'];
   hourly: WeatherData['hourly'];
   isDark: boolean;
-  dateLocale: DateLocale;
 }
 
-export function DailyForecast({ daily, hourly, isDark, dateLocale }: DailyForecastProps) {
+export function DailyForecast({ daily, hourly, isDark }: DailyForecastProps) {
   const [expandedDayIndex, setExpandedDayIndex] = useState<number | null>(null);
 
   const textColor = isDark ? '#f8fafc' : '#ffffff';
@@ -20,8 +19,8 @@ export function DailyForecast({ daily, hourly, isDark, dateLocale }: DailyForeca
   const forecast = daily.time.slice(1).map((time: string, i: number) => {
     const index = i + 1; // Real index in the daily arrays
     const date = new Date(time);
-    const dayStr = date.toLocaleDateString(dateLocale === 'system' ? undefined : dateLocale, { weekday: 'short' });
-    const dateStr = date.toLocaleDateString(dateLocale === 'system' ? undefined : dateLocale, { month: 'short', day: 'numeric' });
+    const dayStr = date.toLocaleDateString(undefined, { weekday: 'short' });
+    const dateStr = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
     const info = getWeatherInfo(daily.weathercode[index]);
     const maxTemp = Math.round(daily.temperature_2m_max[index]);
     const minTemp = Math.round(daily.temperature_2m_min[index]);
@@ -34,7 +33,7 @@ export function DailyForecast({ daily, hourly, isDark, dateLocale }: DailyForeca
     return hourly.time.slice(startHourIndex, startHourIndex + 24).map((time: string, index: number) => {
       const actualIndex = startHourIndex + index;
       const date = new Date(time);
-      const timeStr = date.toLocaleTimeString(dateLocale === 'system' ? undefined : dateLocale, { hour: '2-digit', minute: '2-digit' });
+      const timeStr = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
       const info = getWeatherInfo(hourly.weathercode[actualIndex]);
       const temp = Math.round(hourly.temperature_2m[actualIndex]);
       

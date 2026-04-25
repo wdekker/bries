@@ -34,8 +34,6 @@ export default function HomeScreen() {
     handleCurrentLocation,
     onRefresh,
     toggleUnit,
-    dateLocale,
-    toggleDateLocale,
   } = useWeather();
 
   const gradientColors = (isDark ? ['#0f172a', '#1e293b'] : ['#38bdf8', '#0ea5e9']) as readonly [string, string, ...string[]];
@@ -76,8 +74,6 @@ export default function HomeScreen() {
         onClose={() => setShowSettings(false)} 
         unit={unit} 
         onToggleUnit={toggleUnit} 
-        dateLocale={dateLocale}
-        onToggleDateLocale={toggleDateLocale}
         isDark={isDark} 
       />
 
@@ -105,21 +101,18 @@ export default function HomeScreen() {
           cityName={cityName}
           lastFetchedTime={lastFetchedTime}
           isDark={isDark}
-          dateLocale={dateLocale}
         />
 
         <HourlyForecast 
           hourly={weatherData.hourly}
           currentHourString={weatherData.current_weather.time}
           isDark={isDark}
-          dateLocale={dateLocale}
         />
 
         <DailyForecast 
           daily={weatherData.daily}
           hourly={weatherData.hourly}
           isDark={isDark}
-          dateLocale={dateLocale}
         />
 
       </ScrollView>
