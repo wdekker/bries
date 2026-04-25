@@ -30,7 +30,7 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, isDark 
           minute: '2-digit' 
         });
       }
-    } catch (e) {}
+    } catch {}
   }
   
   return (
