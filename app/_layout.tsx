@@ -15,6 +15,9 @@ export default function RootLayout() {
       <Head>
         <title>Nimbus - Weather Forecast</title>
         <meta name="description" content="A beautiful, high-performance, cross-platform weather application built with Expo and React Native." />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icon.png" />
+        <meta name="theme-color" content="#0f172a" />
         <meta property="og:title" content="Nimbus - Weather Forecast" />
         <meta property="og:description" content="A beautiful, cross-platform weather application." />
         <meta property="og:url" content="https://nimbus.dekker.dev" />
@@ -25,6 +28,13 @@ export default function RootLayout() {
           async 
           src="//gc.zgo.at/count.js" 
         />
+        <script dangerouslySetInnerHTML={{ __html: `
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+              navigator.serviceWorker.register('/sw.js');
+            });
+          }
+        `}} />
       </Head>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />

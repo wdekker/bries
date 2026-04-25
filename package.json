@@ -53,8 +53,9 @@
     "eslint-config-expo": "~10.0.0",
     "jest": "^30.3.0",
     "jest-expo": "^55.0.16",
-    "react-test-renderer": "^19.2.5",
-    "typescript": "~6.0.3"
+    "react-test-renderer": "^19.1.0",
+    "typescript": "~6.0.3",
+    "workbox-cli": "^7.3.0"
   },
   "private": true
 }

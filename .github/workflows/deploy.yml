@@ -31,6 +31,8 @@ jobs:
         run: npm install --legacy-peer-deps
       - name: Build Web
         run: npx expo export -p web
+      - name: Generate Service Worker
+        run: npx workbox-cli generateSW workbox-config.js
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
