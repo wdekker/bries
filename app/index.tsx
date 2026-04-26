@@ -28,12 +28,14 @@ export default function HomeScreen() {
     searchResults,
     setSearchResults,
     unit,
+    windUnit,
     showSettings,
     setShowSettings,
     handleSelectCity,
     handleCurrentLocation,
     onRefresh,
     toggleUnit,
+    toggleWindUnit,
   } = useWeather();
 
   const gradientColors = (isDark ? ['#0f172a', '#1e293b'] : ['#38bdf8', '#0ea5e9']) as readonly [string, string, ...string[]];
@@ -74,6 +76,8 @@ export default function HomeScreen() {
         onClose={() => setShowSettings(false)} 
         unit={unit} 
         onToggleUnit={toggleUnit} 
+        windUnit={windUnit}
+        onToggleWindUnit={toggleWindUnit}
         isDark={isDark} 
       />
 
@@ -101,6 +105,7 @@ export default function HomeScreen() {
           cityName={cityName}
           lastFetchedTime={lastFetchedTime}
           isDark={isDark}
+          windUnit={windUnit}
         />
 
         <HourlyForecast 

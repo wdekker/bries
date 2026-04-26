@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { Platform, AppState, AppStateStatus } from 'react-native';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { WeatherData, LocationState, TemperatureUnit } from '../types/weather';
+import { WeatherData, LocationState, TemperatureUnit, WindSpeedUnit } from '../types/weather';
 
 const CACHE_KEY = '@weather_cache';
 const UNIT_KEY = '@weather_unit';
+const WIND_UNIT_KEY = '@weather_wind_unit';
 
 export function useWeather() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -21,6 +22,7 @@ export function useWeather() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
   const [unit, setUnit] = useState<TemperatureUnit>('C');
+  const [windUnit, setWindUnit] = useState<WindSpeedUnit>('km/h');
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
@@ -141,6 +143,14 @@ export function useWeather() {
     }
   };
 
+  const toggleWindUnit = async (newUnit: WindSpeedUnit) => {
+    setWindUnit(newUnit);
+    setShowSettings(false);
+    try {
+      await AsyncStorage.setItem(WIND_UNIT_KEY, newUnit);
+    } catch (e) {}
+  };
+
   useEffect(() => {
     let intervalId: ReturnType<typeof setInterval>;
 
@@ -151,6 +161,11 @@ export function useWeather() {
         if (savedUnit === 'F') {
           loadedUnit = 'F';
           setUnit('F');
+        }
+
+        const savedWindUnit = await AsyncStorage.getItem(WIND_UNIT_KEY);
+        if (savedWindUnit && (savedWindUnit === 'km/h' || savedWindUnit === 'Beaufort' || savedWindUnit === 'Knots')) {
+          setWindUnit(savedWindUnit as WindSpeedUnit);
         }
 
         const cachedStr = await AsyncStorage.getItem(CACHE_KEY);
@@ -252,11 +267,13 @@ export function useWeather() {
     searchResults,
     setSearchResults,
     unit,
+    windUnit,
     showSettings,
     setShowSettings,
     handleSelectCity,
     handleCurrentLocation,
     onRefresh,
     toggleUnit,
+    toggleWindUnit,
   };
 }

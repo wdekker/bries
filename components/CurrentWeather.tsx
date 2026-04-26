@@ -1,17 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Wind } from 'lucide-react-native';
-import { getWeatherInfo } from '../utils/weather';
-import { WeatherData } from '../types/weather';
+import { getWeatherInfo, formatWindSpeed } from '../utils/weather';
+import { WeatherData, WindSpeedUnit } from '../types/weather';
 
 interface CurrentWeatherProps {
   weatherData: WeatherData;
   cityName: string;
   lastFetchedTime: Date | null;
   isDark: boolean;
+  windUnit: WindSpeedUnit;
 }
 
-export function CurrentWeather({ weatherData, cityName, lastFetchedTime, isDark }: CurrentWeatherProps) {
+export function CurrentWeather({ weatherData, cityName, lastFetchedTime, isDark, windUnit }: CurrentWeatherProps) {
   const currentInfo = getWeatherInfo(weatherData.current_weather.weathercode);
   const CurrentIcon = currentInfo.icon;
   
@@ -58,7 +59,7 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, isDark 
         <View style={styles.stat}>
           <Wind size={20} color={subTextColor} />
           <Text style={[styles.statValue, { color: textColor }]}>
-            {weatherData.current_weather.windspeed} km/h
+            {formatWindSpeed(weatherData.current_weather.windspeed, windUnit)}
           </Text>
           <Text style={[styles.statLabel, { color: subTextColor }]}>Wind</Text>
         </View>

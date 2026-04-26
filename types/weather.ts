@@ -29,3 +29,5 @@ export interface LocationState {
 }
 
 export type TemperatureUnit = 'C' | 'F';
+
+export type WindSpeedUnit = 'km/h' | 'Beaufort' | 'Knots';

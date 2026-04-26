@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
 import { X, Download } from 'lucide-react-native';
-import { TemperatureUnit } from '../types/weather';
+import { TemperatureUnit, WindSpeedUnit } from '../types/weather';
 import { usePWAInstall } from '../hooks/usePWAInstall';
 
 interface SettingsModalProps {
@@ -9,10 +9,12 @@ interface SettingsModalProps {
   onClose: () => void;
   unit: TemperatureUnit;
   onToggleUnit: (unit: TemperatureUnit) => void;
+  windUnit: WindSpeedUnit;
+  onToggleWindUnit: (unit: WindSpeedUnit) => void;
   isDark: boolean;
 }
 
-export function SettingsModal({ visible, onClose, unit, onToggleUnit, isDark }: SettingsModalProps) {
+export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, isDark }: SettingsModalProps) {
   const { isInstallable, promptInstall } = usePWAInstall();
 
   return (
@@ -47,6 +49,42 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, isDark }: 
               onPress={() => onToggleUnit('F')}
             >
               <Text style={{ color: unit === 'F' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>Fahrenheit (°F)</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 16 }]}>Wind Speed Unit</Text>
+          <View style={styles.unitToggleRow}>
+            <TouchableOpacity 
+              style={[
+                styles.unitBtn, 
+                windUnit === 'km/h' ? { backgroundColor: '#38bdf8' } : { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
+                { marginRight: 4 }
+              ]}
+              onPress={() => onToggleWindUnit('km/h')}
+            >
+              <Text style={{ color: windUnit === 'km/h' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600', fontSize: 13 }}>km/h</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={[
+                styles.unitBtn, 
+                windUnit === 'Beaufort' ? { backgroundColor: '#38bdf8' } : { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
+                { marginHorizontal: 4 }
+              ]}
+              onPress={() => onToggleWindUnit('Beaufort')}
+            >
+              <Text style={{ color: windUnit === 'Beaufort' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600', fontSize: 13 }}>Beaufort</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[
+                styles.unitBtn, 
+                windUnit === 'Knots' ? { backgroundColor: '#38bdf8' } : { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
+                { marginLeft: 4 }
+              ]}
+              onPress={() => onToggleWindUnit('Knots')}
+            >
+              <Text style={{ color: windUnit === 'Knots' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600', fontSize: 13 }}>Knots</Text>
             </TouchableOpacity>
           </View>
 
