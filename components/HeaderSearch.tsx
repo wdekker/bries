@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native';
 import { Search, MapPin, X, Settings as SettingsIcon } from 'lucide-react-native';
 
 interface HeaderSearchProps {
@@ -31,7 +31,7 @@ export function HeaderSearch({
           <View style={[styles.searchContainer, { backgroundColor: cardBg }]}>
             <Search size={20} color={subTextColor} />
             <TextInput
-              style={[styles.searchInput, { color: textColor }]}
+              style={[styles.searchInput, { color: textColor }, Platform.OS === 'web' && { outlineStyle: 'none' } as any]}
               placeholder="Search city..."
               placeholderTextColor={subTextColor}
               value={searchQuery}

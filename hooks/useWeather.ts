@@ -24,7 +24,7 @@ export function useWeather() {
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
-    if (searchQuery.trim().length > 2) {
+    if (searchQuery.trim().length > 1) {
       const delayDebounceFn = setTimeout(async () => {
         try {
           const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchQuery)}&count=5&language=en&format=json`);
