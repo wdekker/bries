@@ -95,11 +95,12 @@ export function useWeather() {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {
-        let location = await Location.getCurrentPositionAsync({
+        const locationPromise = Location.getCurrentPositionAsync({
           accuracy: Location.Accuracy.Balanced,
-          timeout: 5000,
           maximumAge: 300000
         });
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Location timeout')), 5000));
+        let location = await Promise.race([locationPromise, timeoutPromise]) as Location.LocationObject;
         const lat = location.coords.latitude;
         const lon = location.coords.longitude;
         let city = 'Local Weather';
@@ -177,9 +178,13 @@ export function useWeather() {
           setWindUnit(savedWindUnit as WindSpeedUnit);
         }
 
-        const savedSunEvents = await AsyncStorage.getItem(SUN_EVENTS_KEY);
-        if (savedSunEvents !== null) {
-          setShowSunEvents(JSON.parse(savedSunEvents));
+        try {
+          const savedSunEvents = await AsyncStorage.getItem(SUN_EVENTS_KEY);
+          if (savedSunEvents !== null) {
+            setShowSunEvents(JSON.parse(savedSunEvents));
+          }
+        } catch (err) {
+          console.log('Failed to parse sun events setting');
         }
 
         const cachedStr = await AsyncStorage.getItem(CACHE_KEY);
@@ -202,11 +207,12 @@ export function useWeather() {
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status === 'granted') {
-          let location = await Location.getCurrentPositionAsync({
+          const locationPromise = Location.getCurrentPositionAsync({
             accuracy: Location.Accuracy.Balanced,
-            timeout: 5000,
             maximumAge: 300000
           });
+          const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Location timeout')), 5000));
+          let location = await Promise.race([locationPromise, timeoutPromise]) as Location.LocationObject;
           lat = location.coords.latitude;
           lon = location.coords.longitude;
           
