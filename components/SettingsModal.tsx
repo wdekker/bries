@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
 import { X } from 'lucide-react-native';
 import { TemperatureUnit } from '../types/weather';
 
@@ -44,6 +44,21 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, isDark }: 
               onPress={() => onToggleUnit('F')}
             >
               <Text style={{ color: unit === 'F' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>Fahrenheit (°F)</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.aboutContainer}>
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 10 }]}>About Bries</Text>
+            <Text style={[styles.aboutText, { color: isDark ? '#f1f5f9' : '#334155' }]}>
+              Bries was created to provide a free, privacy-first, ad-free, and open-source alternative to current weather apps (much like the philosophy behind deqr.dekker.dev).
+            </Text>
+            
+            <TouchableOpacity onPress={() => Linking.openURL('https://github.com/wdekker/bries')} style={styles.linkButton}>
+              <Text style={styles.linkText}>View Source on GitHub</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={() => Linking.openURL('http://dekker.dev/contact')} style={styles.linkButton}>
+              <Text style={styles.linkText}>Contact Developer</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -96,5 +111,28 @@ const styles = StyleSheet.create({
     paddingVertical: 14, 
     alignItems: 'center', 
     borderRadius: 12, 
+  },
+  aboutContainer: {
+    marginTop: 16,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(150, 150, 150, 0.2)',
+  },
+  aboutText: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  linkButton: {
+    paddingVertical: 10,
+    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+    borderRadius: 8,
+    marginBottom: 8,
+    alignItems: 'center',
+  },
+  linkText: {
+    color: '#38bdf8',
+    fontWeight: '600',
+    fontSize: 14,
   },
 });
