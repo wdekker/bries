@@ -50,7 +50,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, isDark }: 
           <View style={styles.aboutContainer}>
             <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 10 }]}>About Bries</Text>
             <Text style={[styles.aboutText, { color: isDark ? '#f1f5f9' : '#334155' }]}>
-              Bries was created to provide a free, privacy-first, ad-free, and open-source alternative to current weather apps (much like the philosophy behind deqr.dekker.dev).
+              Bries was created to provide a free, privacy-first, ad-free, and open-source alternative to current weather apps. It relies purely on the Open-Meteo API, requiring no API keys or personal data tracking.
             </Text>
             
             <TouchableOpacity onPress={() => Linking.openURL('https://github.com/wdekker/bries')} style={styles.linkButton}>

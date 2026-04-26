@@ -3,7 +3,7 @@
 A beautiful, high-performance, cross-platform weather application built with Expo and React Native.
 
 ## About Bries
-Bries was created to provide a free, privacy-first, ad-free, and open-source alternative to current weather apps (much in line with the philosophy behind [deqr.dekker.dev](https://deqr.dekker.dev)). It relies purely on the Open-Meteo API, requiring no API keys or personal data tracking.
+Bries was created to provide a free, privacy-first, ad-free, and open-source alternative to current weather apps. It relies purely on the Open-Meteo API, requiring no API keys or personal data tracking.
 
 - **GitHub Repository**: [https://github.com/wdekker/bries](https://github.com/wdekker/bries)
 - **Contact**: [http://dekker.dev/contact](http://dekker.dev/contact)
