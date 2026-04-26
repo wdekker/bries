@@ -50,7 +50,7 @@ export function useWeather() {
       const unitParam = activeUnit === 'F' ? '&temperature_unit=fahrenheit' : '';
       
       const res = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weathercode&timezone=auto&forecast_days=14${unitParam}`,
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weathercode,precipitation_probability,windspeed_10m&timezone=auto&forecast_days=14${unitParam}`,
         { cache: 'no-store' }
       );
       if (!res.ok) throw new Error('Network response was not ok');

@@ -110,8 +110,10 @@ export default function HomeScreen() {
 
         <HourlyForecast 
           hourly={weatherData.hourly}
+          daily={weatherData.daily}
           currentHourString={weatherData.current_weather.time}
           isDark={isDark}
+          windUnit={windUnit}
         />
 
         <DailyForecast 

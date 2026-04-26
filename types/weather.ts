@@ -13,12 +13,16 @@ export interface WeatherData {
     time: string[];
     temperature_2m: number[];
     weathercode: number[];
+    precipitation_probability: number[];
+    windspeed_10m: number[];
   };
   daily: {
     time: string[];
     weathercode: number[];
     temperature_2m_max: number[];
     temperature_2m_min: number[];
+    sunrise: string[];
+    sunset: string[];
   };
 }
 
