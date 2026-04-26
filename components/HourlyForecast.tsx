@@ -71,10 +71,11 @@ interface HourlyForecastProps {
   daily: WeatherData['daily'];
   currentHourString: string;
   windUnit: WindSpeedUnit;
+  showSunEvents: boolean;
   isDark: boolean;
 }
 
-export function HourlyForecast({ hourly, daily, currentHourString, windUnit, isDark }: HourlyForecastProps) {
+export function HourlyForecast({ hourly, daily, currentHourString, windUnit, showSunEvents, isDark }: HourlyForecastProps) {
   const textColor = isDark ? '#f8fafc' : '#ffffff';
 
   let startHourIndexToday = 0;
@@ -89,7 +90,7 @@ export function HourlyForecast({ hourly, daily, currentHourString, windUnit, isD
     startHourIndexToday = idx;
   }
 
-  const items = generateHourlyItems(hourly, daily, startHourIndexToday, 24, true);
+  const items = generateHourlyItems(hourly, daily, startHourIndexToday, 24, true, showSunEvents);
 
   return (
     <View style={styles.hourlyContainer}>

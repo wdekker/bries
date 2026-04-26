@@ -1,6 +1,6 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
-import { X, Download } from 'lucide-react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking, Switch, Platform } from 'react-native';
+import { X, Download, Sunrise } from 'lucide-react-native';
 import { TemperatureUnit, WindSpeedUnit } from '../types/weather';
 import { usePWAInstall } from '../hooks/usePWAInstall';
 
@@ -11,10 +11,12 @@ interface SettingsModalProps {
   onToggleUnit: (unit: TemperatureUnit) => void;
   windUnit: WindSpeedUnit;
   onToggleWindUnit: (unit: WindSpeedUnit) => void;
+  showSunEvents: boolean;
+  onToggleSunEvents: (value: boolean) => void;
   isDark: boolean;
 }
 
-export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, isDark }: SettingsModalProps) {
+export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, showSunEvents, onToggleSunEvents, isDark }: SettingsModalProps) {
   const { isInstallable, promptInstall } = usePWAInstall();
 
   return (
@@ -100,6 +102,23 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
               </TouchableOpacity>
             </View>
           )}
+
+          <View style={styles.aboutContainer}>
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>Timeline Events</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Sunrise size={20} color={isDark ? '#fbbf24' : '#d97706'} style={{ marginRight: 8 }} />
+                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>Sunrise & Sunset</Text>
+              </View>
+              <Switch
+                value={showSunEvents}
+                onValueChange={onToggleSunEvents}
+                trackColor={{ false: isDark ? '#334155' : '#cbd5e1', true: '#38bdf8' }}
+                thumbColor={Platform.OS === 'ios' ? '#ffffff' : showSunEvents ? '#ffffff' : '#f8fafc'}
+                ios_backgroundColor={isDark ? '#334155' : '#cbd5e1'}
+              />
+            </View>
+          </View>
 
           <View style={[styles.aboutContainer, isInstallable ? { marginTop: 0 } : {}]}>
             <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 10 }]}>About Bries</Text>

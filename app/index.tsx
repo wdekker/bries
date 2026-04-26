@@ -78,6 +78,8 @@ export default function HomeScreen() {
         onToggleUnit={toggleUnit} 
         windUnit={windUnit}
         onToggleWindUnit={toggleWindUnit}
+        showSunEvents={showSunEvents}
+        onToggleSunEvents={toggleSunEvents}
         isDark={isDark} 
       />
 
@@ -112,14 +114,16 @@ export default function HomeScreen() {
           hourly={weatherData.hourly}
           daily={weatherData.daily}
           currentHourString={weatherData.current_weather.time}
-          isDark={isDark}
           windUnit={windUnit}
+          showSunEvents={showSunEvents}
+          isDark={isDark}
         />
 
         <DailyForecast 
           daily={weatherData.daily}
           hourly={weatherData.hourly}
           windUnit={windUnit}
+          showSunEvents={showSunEvents}
           isDark={isDark}
         />
 

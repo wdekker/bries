@@ -8,10 +8,11 @@ interface DailyForecastProps {
   daily: WeatherData['daily'];
   hourly: WeatherData['hourly'];
   windUnit: WindSpeedUnit;
+  showSunEvents: boolean;
   isDark: boolean;
 }
 
-export function DailyForecast({ daily, hourly, windUnit, isDark }: DailyForecastProps) {
+export function DailyForecast({ daily, hourly, windUnit, showSunEvents, isDark }: DailyForecastProps) {
   const [expandedDayIndex, setExpandedDayIndex] = useState<number | null>(null);
 
   const textColor = isDark ? '#f8fafc' : '#ffffff';
@@ -31,7 +32,7 @@ export function DailyForecast({ daily, hourly, windUnit, isDark }: DailyForecast
   });
 
   const getHourlyForDay = (dayIndex: number) => {
-    return generateHourlyItems(hourly, daily, dayIndex * 24, 24, false);
+    return generateHourlyItems(hourly, daily, dayIndex * 24, 24, false, showSunEvents);
   };
 
   return (

@@ -7,6 +7,7 @@ import { WeatherData, LocationState, TemperatureUnit, WindSpeedUnit } from '../t
 const CACHE_KEY = '@weather_cache';
 const UNIT_KEY = '@weather_unit';
 const WIND_UNIT_KEY = '@weather_wind_unit';
+const SUN_EVENTS_KEY = '@weather_sun_events';
 
 export function useWeather() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -23,6 +24,7 @@ export function useWeather() {
 
   const [unit, setUnit] = useState<TemperatureUnit>('C');
   const [windUnit, setWindUnit] = useState<WindSpeedUnit>('km/h');
+  const [showSunEvents, setShowSunEvents] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
@@ -151,6 +153,13 @@ export function useWeather() {
     } catch (e) {}
   };
 
+  const toggleSunEvents = async (value: boolean) => {
+    setShowSunEvents(value);
+    try {
+      await AsyncStorage.setItem(SUN_EVENTS_KEY, JSON.stringify(value));
+    } catch (e) {}
+  };
+
   useEffect(() => {
     let intervalId: ReturnType<typeof setInterval>;
 
@@ -166,6 +175,11 @@ export function useWeather() {
         const savedWindUnit = await AsyncStorage.getItem(WIND_UNIT_KEY);
         if (savedWindUnit && (savedWindUnit === 'km/h' || savedWindUnit === 'Beaufort' || savedWindUnit === 'Knots')) {
           setWindUnit(savedWindUnit as WindSpeedUnit);
+        }
+
+        const savedSunEvents = await AsyncStorage.getItem(SUN_EVENTS_KEY);
+        if (savedSunEvents !== null) {
+          setShowSunEvents(JSON.parse(savedSunEvents));
         }
 
         const cachedStr = await AsyncStorage.getItem(CACHE_KEY);
@@ -268,6 +282,7 @@ export function useWeather() {
     setSearchResults,
     unit,
     windUnit,
+    showSunEvents,
     showSettings,
     setShowSettings,
     handleSelectCity,
@@ -275,5 +290,6 @@ export function useWeather() {
     onRefresh,
     toggleUnit,
     toggleWindUnit,
+    toggleSunEvents,
   };
 }

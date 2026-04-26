@@ -40,7 +40,7 @@ export function formatWindSpeed(speedKmh: number, unit: WindSpeedUnit): string {
   return `${speedKmh.toFixed(1)} km/h`;
 }
 
-export function generateHourlyItems(hourly: any, daily: any, startIndex: number, count: number, isToday: boolean) {
+export function generateHourlyItems(hourly: any, daily: any, startIndex: number, count: number, isToday: boolean, showSunEvents: boolean = true) {
   let items: any[] = [];
   
   for (let index = 0; index < count; index++) {
@@ -68,7 +68,7 @@ export function generateHourlyItems(hourly: any, daily: any, startIndex: number,
     });
   }
 
-  if (daily && daily.sunrise && daily.sunset && items.length > 0) {
+  if (showSunEvents && daily && daily.sunrise && daily.sunset && items.length > 0) {
     const minTime = items[0].timestamp;
     const maxTime = items[items.length - 1].timestamp + 3600000;
     
