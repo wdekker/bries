@@ -1,7 +1,8 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
-import { X } from 'lucide-react-native';
+import { X, Download } from 'lucide-react-native';
 import { TemperatureUnit } from '../types/weather';
+import { usePWAInstall } from '../hooks/usePWAInstall';
 
 interface SettingsModalProps {
   visible: boolean;
@@ -12,6 +13,8 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ visible, onClose, unit, onToggleUnit, isDark }: SettingsModalProps) {
+  const { isInstallable, promptInstall } = usePWAInstall();
+
   return (
     <Modal visible={visible} animationType="fade" transparent={true}>
       <View style={styles.modalOverlay}>
@@ -47,7 +50,20 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, isDark }: 
             </TouchableOpacity>
           </View>
 
-          <View style={styles.aboutContainer}>
+          {isInstallable && (
+            <View style={styles.aboutContainer}>
+              <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>App Installation</Text>
+              <TouchableOpacity 
+                onPress={promptInstall} 
+                style={[styles.linkButton, { backgroundColor: '#38bdf8', flexDirection: 'row', justifyContent: 'center' }]}
+              >
+                <Download size={18} color="#ffffff" style={{ marginRight: 8 }} />
+                <Text style={[styles.linkText, { color: '#ffffff' }]}>Install Bries to Home Screen</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <View style={[styles.aboutContainer, isInstallable ? { marginTop: 0 } : {}]}>
             <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 10 }]}>About Bries</Text>
             <Text style={[styles.aboutText, { color: isDark ? '#f1f5f9' : '#334155' }]}>
               Bries was created to provide a free, privacy-first, ad-free, and open-source alternative to current weather apps. It relies purely on the Open-Meteo API, requiring no API keys or personal data tracking.
