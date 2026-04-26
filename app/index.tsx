@@ -29,6 +29,7 @@ export default function HomeScreen() {
     setSearchResults,
     unit,
     windUnit,
+    showSunEvents,
     showSettings,
     setShowSettings,
     handleSelectCity,
@@ -36,6 +37,7 @@ export default function HomeScreen() {
     onRefresh,
     toggleUnit,
     toggleWindUnit,
+    toggleSunEvents,
   } = useWeather();
 
   const gradientColors = (isDark ? ['#0f172a', '#1e293b'] : ['#38bdf8', '#0ea5e9']) as readonly [string, string, ...string[]];
