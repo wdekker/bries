@@ -29,7 +29,11 @@ export function HourlyForecast({ hourly, currentHourString, isDark }: HourlyFore
   const todayHourlyForecast = hourly.time.slice(startHourIndexToday, startHourIndexToday + 24).map((time: string, index: number) => {
     const actualIndex = startHourIndexToday + index;
     const date = new Date(time);
-    const timeStr = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    const isMidnight = date.getHours() === 0;
+    let timeStr = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+    if (isMidnight && index > 0) {
+      timeStr = date.toLocaleDateString(undefined, { weekday: 'short' });
+    }
     const info = getWeatherInfo(hourly.weathercode[actualIndex]);
     const temp = Math.round(hourly.temperature_2m[actualIndex]);
     
@@ -42,7 +46,7 @@ export function HourlyForecast({ hourly, currentHourString, isDark }: HourlyFore
 
   return (
     <View style={styles.hourlyContainer}>
-      <Text style={[styles.forecastTitle, { color: textColor }]}>Hourly Forecast - Today</Text>
+      <Text style={[styles.forecastTitle, { color: textColor }]}>Hourly Forecast</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hourlyScroll}>
         {todayHourlyForecast.map((item: any, index: number) => {
           const Icon = item.icon;
