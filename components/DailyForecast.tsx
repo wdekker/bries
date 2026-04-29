@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Moon } from 'lucide-react-native';
 import { getWeatherInfo, generateHourlyItems, getMoonPhaseInfo, getLunarPhase } from '../utils/weather';
-import { WeatherData, WindSpeedUnit } from '../types/weather';
+import { WeatherData, WindSpeedUnit, TideData } from '../types/weather';
 import { HourlyScrollList } from './HourlyForecast';
 
 interface DailyForecastProps {
@@ -11,10 +11,11 @@ interface DailyForecastProps {
   windUnit: WindSpeedUnit;
   showSunEvents: boolean;
   showMoonPhase: boolean;
+  tideData: TideData | null;
   isDark: boolean;
 }
 
-export function DailyForecast({ daily, hourly, windUnit, showSunEvents, showMoonPhase, isDark }: DailyForecastProps) {
+export function DailyForecast({ daily, hourly, windUnit, showSunEvents, showMoonPhase, tideData, isDark }: DailyForecastProps) {
   const [expandedDayIndex, setExpandedDayIndex] = useState<number | null>(null);
 
   const textColor = isDark ? '#f8fafc' : '#ffffff';
@@ -36,7 +37,7 @@ export function DailyForecast({ daily, hourly, windUnit, showSunEvents, showMoon
   });
 
   const getHourlyForDay = (dayIndex: number) => {
-    return generateHourlyItems(hourly, daily, dayIndex * 24, 24, false, showSunEvents);
+    return generateHourlyItems(hourly, daily, dayIndex * 24, 24, false, showSunEvents, tideData);
   };
 
   return (

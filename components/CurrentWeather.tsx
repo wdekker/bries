@@ -1,19 +1,21 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Wind, Moon } from 'lucide-react-native';
+import { Wind, Moon, Waves } from 'lucide-react-native';
 import { getWeatherInfo, formatWindSpeed, getMoonPhaseInfo, getLunarPhase } from '../utils/weather';
-import { WeatherData, WindSpeedUnit } from '../types/weather';
+import { WeatherData, WindSpeedUnit, TideData } from '../types/weather';
 
 interface CurrentWeatherProps {
   weatherData: WeatherData;
   cityName: string;
   lastFetchedTime: Date | null;
   showMoonPhase: boolean;
+  showTides: boolean;
+  tideData: TideData | null;
   isDark: boolean;
   windUnit: WindSpeedUnit;
 }
 
-export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoonPhase, isDark, windUnit }: CurrentWeatherProps) {
+export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoonPhase, showTides, tideData, isDark, windUnit }: CurrentWeatherProps) {
   const currentInfo = getWeatherInfo(weatherData.current_weather.weathercode);
   const CurrentIcon = currentInfo.icon;
   
@@ -37,6 +39,20 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoo
 
   const phase = getLunarPhase(new Date());
   const moonPhaseStr = getMoonPhaseInfo(phase);
+
+  // Find today's tides
+  let todaysTides: any[] = [];
+  if (showTides && tideData && tideData.extremes) {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    todaysTides = tideData.extremes.filter(e => {
+      const t = new Date(e.time).getTime();
+      return t >= today.getTime() && t < tomorrow.getTime();
+    });
+  }
   
   return (
     <View style={styles.currentWeather}>
@@ -88,6 +104,35 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoo
           <Text style={[styles.statLabel, { color: subTextColor }]}>Low</Text>
         </View>
       </View>
+
+      {showTides && tideData && todaysTides.length > 0 && (
+        <View style={[styles.tideContainer, { backgroundColor: cardBg }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+            <Waves size={18} color={isDark ? '#93c5fd' : '#3b82f6'} style={{ marginRight: 6 }} />
+            <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>Today&apos;s Tides</Text>
+          </View>
+          
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+            {todaysTides.slice(0, 4).map((tide, idx) => (
+              <View key={`tide-${idx}`} style={{ width: '48%', marginBottom: 8, flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ color: subTextColor, fontSize: 14, width: 45 }}>
+                  {new Date(tide.time).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                </Text>
+                <Text style={{ color: textColor, fontSize: 14, fontWeight: '500', marginLeft: 8 }}>
+                  {tide.type === 'high' ? 'High' : 'Low'}
+                </Text>
+                <Text style={{ color: subTextColor, fontSize: 12, marginLeft: 'auto' }}>
+                  {tide.height.toFixed(2)}m
+                </Text>
+              </View>
+            ))}
+          </View>
+          
+          <Text style={{ color: subTextColor, fontSize: 11, marginTop: 8, textAlign: 'center', opacity: 0.7 }}>
+            Station: {tideData.meta.station.name} ({tideData.meta.station.distance}km) • Retrieved: {new Date(tideData.retrievedAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -107,4 +152,10 @@ const styles = StyleSheet.create({
   statValue: { fontSize: 16, fontWeight: '600', marginTop: 8 },
   statLabel: { fontSize: 14, marginTop: 4 },
   statDivider: { width: 1, backgroundColor: 'rgba(255,255,255,0.2)' },
+  tideContainer: {
+    width: '100%',
+    marginTop: 15,
+    borderRadius: 20,
+    padding: 16,
+  }
 });

@@ -2,13 +2,16 @@ import { useState, useEffect } from 'react';
 import { Platform, AppState, AppStateStatus } from 'react-native';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { WeatherData, LocationState, TemperatureUnit, WindSpeedUnit } from '../types/weather';
+import { WeatherData, LocationState, TemperatureUnit, WindSpeedUnit, TideData } from '../types/weather';
 
 const CACHE_KEY = '@weather_cache';
 const UNIT_KEY = '@weather_unit';
 const WIND_UNIT_KEY = '@weather_wind_unit';
 const SUN_EVENTS_KEY = '@weather_sun_events';
 const MOON_PHASE_KEY = '@weather_moon_phase';
+const SHOW_TIDES_KEY = '@weather_show_tides';
+const TIDES_API_KEY = '@weather_tides_api_key';
+const TIDES_CACHE_KEY = '@weather_tides_cache';
 
 export function useWeather() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -27,6 +30,9 @@ export function useWeather() {
   const [windUnit, setWindUnit] = useState<WindSpeedUnit>('km/h');
   const [showSunEvents, setShowSunEvents] = useState(true);
   const [showMoonPhase, setShowMoonPhase] = useState(true);
+  const [showTides, setShowTides] = useState(false);
+  const [stormglassApiKey, setStormglassApiKey] = useState('');
+  const [tideData, setTideData] = useState<TideData | null>(null);
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
@@ -66,6 +72,57 @@ export function useWeather() {
       setCityName(city);
       setLocationState({ lat, lon, city });
       setLoading(false);
+
+      try {
+        const savedShowTidesStr = await AsyncStorage.getItem(SHOW_TIDES_KEY);
+        const shouldShowTides = savedShowTidesStr !== null ? JSON.parse(savedShowTidesStr) : showTides;
+        const savedApiKey = await AsyncStorage.getItem(TIDES_API_KEY);
+        const apiKey = savedApiKey !== null ? savedApiKey : stormglassApiKey;
+
+        if (shouldShowTides && apiKey) {
+          const tideCacheStr = await AsyncStorage.getItem(TIDES_CACHE_KEY);
+          let tideCache: any = null;
+          if (tideCacheStr) tideCache = JSON.parse(tideCacheStr);
+
+          const nowMs = Date.now();
+          if (tideCache && (nowMs - tideCache.retrievedAt < 24 * 60 * 60 * 1000) && Math.abs(tideCache.lat - lat) < 0.1 && Math.abs(tideCache.lon - lon) < 0.1) {
+            setTideData(tideCache.data);
+          } else {
+             const start = new Date();
+             start.setHours(0, 0, 0, 0);
+             const end = new Date(start);
+             end.setDate(end.getDate() + 14);
+             
+             const startStr = start.toISOString();
+             const endStr = end.toISOString();
+
+             const tideRes = await fetch(`https://api.stormglass.io/v2/tide/extremes/point?lat=${lat}&lng=${lon}&start=${startStr}&end=${endStr}`, {
+               headers: { 'Authorization': apiKey }
+             });
+             if (tideRes.ok) {
+               const tData = await tideRes.json();
+               const formattedTideData: TideData = {
+                 extremes: tData.data,
+                 meta: tData.meta,
+                 retrievedAt: nowMs
+               };
+               setTideData(formattedTideData);
+               await AsyncStorage.setItem(TIDES_CACHE_KEY, JSON.stringify({
+                 data: formattedTideData,
+                 lat,
+                 lon,
+                 retrievedAt: nowMs
+               }));
+             } else {
+               if (tideCache) setTideData(tideCache.data);
+             }
+          }
+        } else {
+          setTideData(null);
+        }
+      } catch (err) {
+        console.log('Failed to fetch or load tide data', err);
+      }
 
       try {
         await AsyncStorage.setItem(CACHE_KEY, JSON.stringify({
@@ -170,6 +227,26 @@ export function useWeather() {
     } catch (e) {}
   };
 
+  const toggleShowTides = async (value: boolean) => {
+    setShowTides(value);
+    try {
+      await AsyncStorage.setItem(SHOW_TIDES_KEY, JSON.stringify(value));
+      if (value && stormglassApiKey && locationState) {
+        fetchWeather(locationState.lat, locationState.lon, locationState.city);
+      }
+    } catch (e) {}
+  };
+
+  const saveTideApiKey = async (value: string) => {
+    setStormglassApiKey(value);
+    try {
+      await AsyncStorage.setItem(TIDES_API_KEY, value);
+      if (showTides && value && locationState) {
+        fetchWeather(locationState.lat, locationState.lon, locationState.city);
+      }
+    } catch (e) {}
+  };
+
   useEffect(() => {
     let intervalId: ReturnType<typeof setInterval>;
 
@@ -204,6 +281,15 @@ export function useWeather() {
         } catch (err) {
           console.log('Failed to parse moon phase setting');
         }
+
+        try {
+          const savedShowTides = await AsyncStorage.getItem(SHOW_TIDES_KEY);
+          if (savedShowTides !== null) setShowTides(JSON.parse(savedShowTides));
+          const savedApiKey = await AsyncStorage.getItem(TIDES_API_KEY);
+          if (savedApiKey !== null) setStormglassApiKey(savedApiKey);
+          const tideCacheStr = await AsyncStorage.getItem(TIDES_CACHE_KEY);
+          if (tideCacheStr) setTideData(JSON.parse(tideCacheStr).data);
+        } catch (err) {}
 
         const cachedStr = await AsyncStorage.getItem(CACHE_KEY);
         if (cachedStr) {
@@ -317,5 +403,10 @@ export function useWeather() {
     toggleWindUnit,
     toggleSunEvents,
     toggleMoonPhase,
+    showTides,
+    toggleShowTides,
+    stormglassApiKey,
+    saveTideApiKey,
+    tideData,
   };
 }

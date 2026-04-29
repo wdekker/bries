@@ -1,6 +1,6 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking, Switch, Platform } from 'react-native';
-import { X, Download, Sunrise, Moon } from 'lucide-react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking, Switch, Platform, TextInput } from 'react-native';
+import { X, Download, Sunrise, Moon, Waves } from 'lucide-react-native';
 import { TemperatureUnit, WindSpeedUnit } from '../types/weather';
 import { usePWAInstall } from '../hooks/usePWAInstall';
 
@@ -15,10 +15,14 @@ interface SettingsModalProps {
   onToggleSunEvents: (value: boolean) => void;
   showMoonPhase: boolean;
   onToggleMoonPhase: (value: boolean) => void;
+  showTides: boolean;
+  onToggleTides: (value: boolean) => void;
+  stormglassApiKey: string;
+  onChangeApiKey: (value: string) => void;
   isDark: boolean;
 }
 
-export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, showSunEvents, onToggleSunEvents, showMoonPhase, onToggleMoonPhase, isDark }: SettingsModalProps) {
+export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, showSunEvents, onToggleSunEvents, showMoonPhase, onToggleMoonPhase, showTides, onToggleTides, stormglassApiKey, onChangeApiKey, isDark }: SettingsModalProps) {
   const { isInstallable, promptInstall } = usePWAInstall();
 
   return (
@@ -135,6 +139,36 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
                 ios_backgroundColor={isDark ? '#334155' : '#cbd5e1'}
               />
             </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: showTides ? 8 : 8 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Waves size={20} color={isDark ? '#93c5fd' : '#3b82f6'} style={{ marginRight: 8 }} />
+                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>Tide Events</Text>
+              </View>
+              <Switch
+                value={showTides}
+                onValueChange={onToggleTides}
+                trackColor={{ false: isDark ? '#334155' : '#cbd5e1', true: '#38bdf8' }}
+                thumbColor={Platform.OS === 'ios' ? '#ffffff' : showTides ? '#ffffff' : '#f8fafc'}
+                ios_backgroundColor={isDark ? '#334155' : '#cbd5e1'}
+              />
+            </View>
+
+            {showTides && (
+              <View style={{ marginTop: 8, marginBottom: 8, paddingLeft: 28 }}>
+                <TextInput
+                  style={[styles.apiKeyInput, { color: isDark ? '#ffffff' : '#000000', borderColor: isDark ? '#475569' : '#cbd5e1', backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#f8fafc' }]}
+                  placeholder="Stormglass.io API Key"
+                  placeholderTextColor={isDark ? '#64748b' : '#94a3b8'}
+                  value={stormglassApiKey}
+                  onChangeText={onChangeApiKey}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+                <TouchableOpacity onPress={() => Linking.openURL('https://stormglass.io/')}>
+                  <Text style={{ color: '#38bdf8', fontSize: 12, marginTop: 4 }}>Get a free API key at stormglass.io</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
 
           <View style={[styles.aboutContainer, isInstallable ? { marginTop: 0 } : {}]}>
@@ -225,4 +259,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 14,
   },
+  apiKeyInput: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 13,
+  }
 });

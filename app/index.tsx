@@ -40,6 +40,11 @@ export default function HomeScreen() {
     toggleWindUnit,
     toggleSunEvents,
     toggleMoonPhase,
+    showTides,
+    toggleShowTides,
+    stormglassApiKey,
+    saveTideApiKey,
+    tideData,
   } = useWeather();
 
   const gradientColors = (isDark ? ['#0f172a', '#1e293b'] : ['#38bdf8', '#0ea5e9']) as readonly [string, string, ...string[]];
@@ -86,6 +91,10 @@ export default function HomeScreen() {
         onToggleSunEvents={toggleSunEvents}
         showMoonPhase={showMoonPhase}
         onToggleMoonPhase={toggleMoonPhase}
+        showTides={showTides}
+        onToggleTides={toggleShowTides}
+        stormglassApiKey={stormglassApiKey}
+        onChangeApiKey={saveTideApiKey}
         isDark={isDark} 
       />
 
@@ -113,6 +122,8 @@ export default function HomeScreen() {
           cityName={cityName}
           lastFetchedTime={lastFetchedTime}
           showMoonPhase={showMoonPhase}
+          showTides={showTides}
+          tideData={tideData}
           isDark={isDark}
           windUnit={windUnit}
         />
@@ -123,6 +134,7 @@ export default function HomeScreen() {
           currentHourString={weatherData.current_weather.time}
           windUnit={windUnit}
           showSunEvents={showSunEvents}
+          tideData={tideData}
           isDark={isDark}
         />
 
@@ -132,6 +144,7 @@ export default function HomeScreen() {
           windUnit={windUnit}
           showSunEvents={showSunEvents}
           showMoonPhase={showMoonPhase}
+          tideData={tideData}
           isDark={isDark}
         />
 

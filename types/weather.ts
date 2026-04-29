@@ -37,4 +37,21 @@ export interface LocationState {
 
 export type TemperatureUnit = 'C' | 'F';
 
-export type WindSpeedUnit = 'km/h' | 'Beaufort' | 'Knots';
+export type WindSpeedUnit = 'km/h' | 'mph' | 'm/s' | 'Knots' | 'Beaufort';
+
+export interface TideExtreme {
+  height: number;
+  time: string;
+  type: 'high' | 'low';
+}
+
+export interface TideData {
+  extremes: TideExtreme[];
+  meta: {
+    station: {
+      name: string;
+      distance: number;
+    };
+  };
+  retrievedAt: number;
+}

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { Sunrise, Sunset, Wind, ChevronDown, ChevronUp, Droplets, Umbrella, Thermometer, Sun } from 'lucide-react-native';
-import { getWeatherInfo, formatWindSpeed, generateHourlyItems } from '../utils/weather';
-import { WeatherData, WindSpeedUnit } from '../types/weather';
+import { Sunrise, Sunset, Wind, ChevronDown, ChevronUp, Droplets, Umbrella, Thermometer, Sun, Waves } from 'lucide-react-native';
+import { formatWindSpeed, generateHourlyItems } from '../utils/weather';
+import { WeatherData, WindSpeedUnit, TideData } from '../types/weather';
 
 export function HourlyScrollList({ items, windUnit, isDark }: { items: any[], windUnit: WindSpeedUnit, isDark: boolean }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -49,7 +49,8 @@ export function HourlyScrollList({ items, windUnit, isDark }: { items: any[], wi
                 )}
               </View>
             );
-          } else {
+          }
+          if (item.type === 'sunrise' || item.type === 'sunset') {
             const isSunrise = item.type === 'sunrise';
             const SunIcon = isSunrise ? Sunrise : Sunset;
             return (
@@ -57,6 +58,18 @@ export function HourlyScrollList({ items, windUnit, isDark }: { items: any[], wi
                 <Text style={[styles.hourlyTime, { color: subTextColor }]}>{item.timeStr}</Text>
                 <SunIcon size={32} color={isSunrise ? '#fbbf24' : '#fb923c'} style={{ marginVertical: 10 }} />
                 <Text style={[styles.hourlyTime, { color: textColor, fontWeight: '600' }]}>{isSunrise ? 'Sunrise' : 'Sunset'}</Text>
+              </View>
+            );
+          }
+
+          if (item.type === 'tide') {
+            const isHigh = item.tideType === 'high';
+            return (
+              <View key={`tide-${index}`} style={[styles.hourlyItem, { backgroundColor: cardBg, justifyContent: 'center' }]}>
+                <Text style={[styles.hourlyTime, { color: subTextColor }]}>{item.timeStr}</Text>
+                <Waves size={32} color={isHigh ? '#3b82f6' : '#93c5fd'} style={{ marginVertical: 10 }} />
+                <Text style={[styles.hourlyTime, { color: textColor, fontWeight: '600', fontSize: 13 }]}>{isHigh ? 'High Tide' : 'Low Tide'}</Text>
+                <Text style={[styles.hourlyTime, { color: subTextColor, fontSize: 12, marginTop: 4 }]}>{item.height.toFixed(2)}m</Text>
               </View>
             );
           }
@@ -83,10 +96,11 @@ interface HourlyForecastProps {
   currentHourString: string;
   windUnit: WindSpeedUnit;
   showSunEvents: boolean;
+  tideData: TideData | null;
   isDark: boolean;
 }
 
-export function HourlyForecast({ hourly, daily, currentHourString, windUnit, showSunEvents, isDark }: HourlyForecastProps) {
+export function HourlyForecast({ hourly, daily, currentHourString, windUnit, showSunEvents, tideData, isDark }: HourlyForecastProps) {
   const textColor = isDark ? '#f8fafc' : '#ffffff';
 
   let startHourIndexToday = 0;
@@ -101,11 +115,11 @@ export function HourlyForecast({ hourly, daily, currentHourString, windUnit, sho
     startHourIndexToday = idx;
   }
 
-  const items = generateHourlyItems(hourly, daily, startHourIndexToday, 24, true, showSunEvents);
+  const items = generateHourlyItems(hourly, daily, startHourIndexToday, 24, true, showSunEvents, tideData);
 
   return (
     <View style={styles.hourlyContainer}>
-      <Text style={[styles.forecastTitle, { color: textColor }]}>Hourly Forecast</Text>
+      <Text style={[styles.hourlyTitle, { color: textColor }]}>Today</Text>
       <HourlyScrollList items={items} windUnit={windUnit} isDark={isDark} />
     </View>
   );
@@ -113,6 +127,7 @@ export function HourlyForecast({ hourly, daily, currentHourString, windUnit, sho
 
 const styles = StyleSheet.create({
   hourlyContainer: { width: '100%', marginBottom: 30 },
+  hourlyTitle: { fontSize: 20, fontWeight: '600', marginBottom: 15 },
   forecastTitle: { fontSize: 20, fontWeight: '600', marginBottom: 15 },
   hourlyScroll: { flexDirection: 'row' },
   hourlyItem: { 
