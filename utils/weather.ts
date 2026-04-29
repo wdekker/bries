@@ -51,6 +51,15 @@ export function getMoonPhaseInfo(phase: number): string {
   return 'Waning Crescent';
 }
 
+export function getLunarPhase(date: Date): number {
+  const knownNewMoon = new Date(Date.UTC(2024, 0, 11, 11, 57)).getTime();
+  const lunarCycle = 29.53058868 * 24 * 60 * 60 * 1000;
+  const diff = date.getTime() - knownNewMoon;
+  let phase = (diff % lunarCycle) / lunarCycle;
+  if (phase < 0) phase += 1;
+  return phase;
+}
+
 export function generateHourlyItems(hourly: any, daily: any, startIndex: number, count: number, isToday: boolean, showSunEvents: boolean = true) {
   let items: any[] = [];
   

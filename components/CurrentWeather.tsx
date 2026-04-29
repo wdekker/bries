@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Wind, Moon } from 'lucide-react-native';
-import { getWeatherInfo, formatWindSpeed, getMoonPhaseInfo } from '../utils/weather';
+import { getWeatherInfo, formatWindSpeed, getMoonPhaseInfo, getLunarPhase } from '../utils/weather';
 import { WeatherData, WindSpeedUnit } from '../types/weather';
 
 interface CurrentWeatherProps {
@@ -35,7 +35,8 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoo
     } catch {}
   }
 
-  const moonPhaseStr = weatherData.daily.moon_phase ? getMoonPhaseInfo(weatherData.daily.moon_phase[0]) : '';
+  const phase = getLunarPhase(new Date());
+  const moonPhaseStr = getMoonPhaseInfo(phase);
   
   return (
     <View style={styles.currentWeather}>

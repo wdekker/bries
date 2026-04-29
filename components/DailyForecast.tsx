@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Moon } from 'lucide-react-native';
-import { getWeatherInfo, generateHourlyItems, getMoonPhaseInfo } from '../utils/weather';
+import { getWeatherInfo, generateHourlyItems, getMoonPhaseInfo, getLunarPhase } from '../utils/weather';
 import { WeatherData, WindSpeedUnit } from '../types/weather';
 import { HourlyScrollList } from './HourlyForecast';
 
@@ -29,7 +29,8 @@ export function DailyForecast({ daily, hourly, windUnit, showSunEvents, showMoon
     const info = getWeatherInfo(daily.weathercode[index]);
     const maxTemp = Math.round(daily.temperature_2m_max[index]);
     const minTemp = Math.round(daily.temperature_2m_min[index]);
-    const moonPhaseStr = daily.moon_phase ? getMoonPhaseInfo(daily.moon_phase[index]) : '';
+    const phase = getLunarPhase(date);
+    const moonPhaseStr = getMoonPhaseInfo(phase);
 
     return { index, day: dayStr, date: dateStr, temp: `${maxTemp}° / ${minTemp}°`, icon: info.icon, moonPhaseStr };
   });
