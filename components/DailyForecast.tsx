@@ -54,23 +54,27 @@ export function DailyForecast({ daily, hourly, windUnit, showSunEvents, showMoon
               style={styles.forecastRow}
               activeOpacity={0.7}
             >
-              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1.2 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
                 <Text style={[styles.forecastDay, { color: textColor, width: 45 }]}>{item.day}</Text>
                 <Text style={{ color: subTextColor, fontSize: 12, marginLeft: 8 }}>{item.date}</Text>
               </View>
               
-              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ width: 40, alignItems: 'center' }}>
                 <Icon size={24} color={textColor} />
-                {showMoonPhase && item.moonPhaseStr && (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 12, opacity: 0.7 }}>
-                    <Moon size={12} color={subTextColor} style={{ marginRight: 4 }} />
-                    <Text style={{ color: subTextColor, fontSize: 11 }}>{item.moonPhaseStr}</Text>
-                  </View>
-                )}
               </View>
               
-              <View style={{ flex: 0.8, alignItems: 'flex-end' }}>
-                <Text style={[styles.forecastTemp, { color: textColor, textAlign: 'right' }]}>{item.temp}</Text>
+              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                {showMoonPhase && item.moonPhaseStr ? (
+                  <>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, paddingLeft: 8, opacity: 0.7 }}>
+                      <Moon size={12} color={subTextColor} style={{ marginRight: 4 }} />
+                      <Text style={{ color: subTextColor, fontSize: 10 }} numberOfLines={1} adjustsFontSizeToFit>{item.moonPhaseStr}</Text>
+                    </View>
+                    <Text style={[styles.forecastTemp, { color: textColor, textAlign: 'right' }]}>{item.temp}</Text>
+                  </>
+                ) : (
+                  <Text style={[styles.forecastTemp, { color: textColor, textAlign: 'right' }]}>{item.temp}</Text>
+                )}
               </View>
             </TouchableOpacity>
             
