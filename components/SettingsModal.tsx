@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking, Switch, Platform, TextInput } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking, Switch, Platform, TextInput, ScrollView } from 'react-native';
 import { X, Download, Sunrise, Moon, Waves } from 'lucide-react-native';
 import { TemperatureUnit, WindSpeedUnit } from '../types/weather';
 import { usePWAInstall } from '../hooks/usePWAInstall';
@@ -26,7 +26,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
   const { isInstallable, promptInstall } = usePWAInstall();
 
   return (
-    <Modal visible={visible} animationType="fade" transparent={true}>
+    <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { backgroundColor: isDark ? '#1e293b' : '#ffffff' }]}>
           <View style={styles.modalHeader}>
@@ -36,7 +36,8 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
             </TouchableOpacity>
           </View>
           
-          <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>Temperature Unit</Text>
+          <ScrollView style={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>Temperature Unit</Text>
           <View style={styles.unitToggleRow}>
             <TouchableOpacity 
               style={[
@@ -185,6 +186,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
               <Text style={styles.linkText}>Contact Developer</Text>
             </TouchableOpacity>
           </View>
+          </ScrollView>
         </View>
       </View>
     </Modal>
@@ -195,18 +197,25 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1, 
     backgroundColor: 'rgba(0,0,0,0.6)', 
-    justifyContent: 'center', 
+    justifyContent: 'flex-end', 
     alignItems: 'center'
   },
   modalContent: {
-    width: 320, 
-    borderRadius: 24, 
-    padding: 24,
+    width: '100%', 
+    maxHeight: '85%',
+    borderTopLeftRadius: 24, 
+    borderTopRightRadius: 24, 
+    paddingTop: 24,
+    paddingHorizontal: 24,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.25,
+    shadowOffset: { width: 0, height: -10 },
+    shadowOpacity: 0.15,
     shadowRadius: 10,
-    elevation: 10,
+    elevation: 20,
+  },
+  scrollViewContent: {
+    marginTop: 8,
   },
   modalHeader: {
     flexDirection: 'row', 
