@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform, Animated, Easing } from 'react-native';
-import { Search, MapPin, X, Settings as SettingsIcon, RefreshCcw } from 'lucide-react-native';
+import { Search, MapPin, X, Settings as SettingsIcon, RefreshCcw, Calendar } from 'lucide-react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { i18n } from '../utils/i18n';
 
 interface HeaderSearchProps {
@@ -16,12 +17,16 @@ interface HeaderSearchProps {
   handleRefresh: () => void;
   isRefreshing: boolean;
   setShowSettings: (val: boolean) => void;
+  selectedDate: Date | null;
+  setSelectedDate: (date: Date | null) => void;
 }
 
 export function HeaderSearch({
   isDark, isSearchExpanded, setIsSearchExpanded, searchQuery, setSearchQuery, 
-  searchResults, setSearchResults, handleSelectCity, handleCurrentLocation, handleRefresh, isRefreshing, setShowSettings
+  searchResults, setSearchResults, handleSelectCity, handleCurrentLocation, handleRefresh, isRefreshing, setShowSettings,
+  selectedDate, setSelectedDate
 }: HeaderSearchProps) {
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const textColor = isDark ? '#f8fafc' : '#ffffff';
   const subTextColor = isDark ? '#cbd5e1' : '#e0f2fe';
   const cardBg = isDark ? 'rgba(30, 41, 59, 0.7)' : 'rgba(255, 255, 255, 0.2)';
@@ -81,12 +86,44 @@ export function HeaderSearch({
                 <RefreshCcw size={22} color={textColor} />
               </Animated.View>
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
+              <Calendar size={22} color={textColor} />
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => setShowSettings(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
               <SettingsIcon size={22} color={textColor} />
             </TouchableOpacity>
           </View>
         )}
       </View>
+
+      {selectedDate && (
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 15 }}>
+          <View style={{ backgroundColor: activeCardBg, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, flexDirection: 'row', alignItems: 'center' }}>
+            <Calendar size={16} color={textColor} style={{ marginRight: 8 }} />
+            <Text style={{ color: textColor, fontWeight: '600', marginRight: 10 }}>
+              {selectedDate.toLocaleDateString(undefined, { dateStyle: 'medium' })}
+            </Text>
+            <TouchableOpacity onPress={() => setSelectedDate(null)}>
+              <X size={16} color={textColor} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={selectedDate || new Date()}
+          mode="date"
+          display="default"
+          maximumDate={new Date()}
+          onChange={(event, date) => {
+            setShowDatePicker(false);
+            if (event.type === 'set' && date) {
+              setSelectedDate(date);
+            }
+          }}
+        />
+      )}
 
       {isSearchExpanded && searchResults.length > 0 && (
         <View style={[styles.autocompleteInline, { backgroundColor: activeCardBg }]}>

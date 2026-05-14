@@ -9,6 +9,7 @@ export interface WeatherData {
     weathercode: number;
     is_day: number;
     time: string;
+    is_historical?: boolean;
   };
   hourly: {
     time: string[];

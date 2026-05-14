@@ -14,9 +14,10 @@ interface CurrentWeatherProps {
   tideData: TideData | null;
   isDark: boolean;
   windUnit: WindSpeedUnit;
+  selectedDate: Date | null;
 }
 
-export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoonPhase, showTides, tideData, isDark, windUnit }: CurrentWeatherProps) {
+export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoonPhase, showTides, tideData, isDark, windUnit, selectedDate }: CurrentWeatherProps) {
   const isDay = weatherData.current_weather.is_day === 1;
   const currentInfo = getWeatherInfo(weatherData.current_weather.weathercode, isDay);
   const CurrentIcon = currentInfo.icon;
@@ -69,9 +70,15 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoo
           <Text style={{ color: subTextColor, fontSize: 14, fontWeight: '500' }}>{moonPhaseStr}</Text>
         </View>
       )}
-      {localTimeStr && (
+      {localTimeStr && !weatherData.current_weather.is_historical && (
         <Text style={{ color: subTextColor, fontSize: 14, fontWeight: '500', marginBottom: 20 }}>
           {i18n.t('localTime')}: {localTimeStr} ({weatherData.timezone_abbreviation || weatherData.timezone})
+        </Text>
+      )}
+      
+      {weatherData.current_weather.is_historical && (
+        <Text style={{ color: '#fbbf24', fontSize: 14, fontWeight: '600', marginBottom: 20 }}>
+          {i18n.t('historicalTimeNote')}
         </Text>
       )}
       

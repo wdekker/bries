@@ -59,7 +59,11 @@ const translations = {
     fullMoon: 'Full Moon',
     waningGibbous: 'Waning Gibbous',
     lastQuarter: 'Last Quarter',
-    waningCrescent: 'Waning Crescent'
+    waningCrescent: 'Waning Crescent',
+    selectDate: 'Select Date',
+    historicalWeather: 'Historical Weather',
+    returnToLive: 'Return to Live',
+    historicalTimeNote: '(Historical 12:00 PM)'
   },
   de: {
     clearSky: 'Klarer Himmel',
@@ -117,7 +121,11 @@ const translations = {
     fullMoon: 'Vollmond',
     waningGibbous: 'Abnehmender Mond',
     lastQuarter: 'Letztes Viertel',
-    waningCrescent: 'Abnehmende Sichel'
+    waningCrescent: 'Abnehmende Sichel',
+    selectDate: 'Datum auswählen',
+    historicalWeather: 'Historisches Wetter',
+    returnToLive: 'Zurück zum Live-Wetter',
+    historicalTimeNote: '(Historisch 12:00 Uhr)'
   },
   fr: {
     clearSky: 'Ciel Dégagé',
@@ -175,7 +183,11 @@ const translations = {
     fullMoon: 'Pleine Lune',
     waningGibbous: 'Lune Gibbeuse Décroissante',
     lastQuarter: 'Dernier Quartier',
-    waningCrescent: 'Dernier Croissant'
+    waningCrescent: 'Dernier Croissant',
+    selectDate: 'Sélectionner une date',
+    historicalWeather: 'Météo historique',
+    returnToLive: 'Retour au direct',
+    historicalTimeNote: '(Historique 12h00)'
   },
   nl: {
     clearSky: 'Heldere Lucht',
@@ -233,7 +245,11 @@ const translations = {
     fullMoon: 'Volle Maan',
     waningGibbous: 'Afnemende Maan',
     lastQuarter: 'Laatste Kwartier',
-    waningCrescent: 'Asgrauwe Maan'
+    waningCrescent: 'Asgrauwe Maan',
+    selectDate: 'Datum selecteren',
+    historicalWeather: 'Historisch Weer',
+    returnToLive: 'Terug naar live',
+    historicalTimeNote: '(Historisch 12:00)'
   }
 };
 

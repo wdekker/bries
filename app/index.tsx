@@ -48,6 +48,8 @@ export default function HomeScreen() {
     tideData,
     language,
     changeLanguage,
+    selectedDate,
+    setSelectedDate,
   } = useWeather();
 
   const gradientColors = (isDark ? ['#0f172a', '#1e293b'] : ['#38bdf8', '#0ea5e9']) as readonly [string, string, ...string[]];
@@ -122,6 +124,8 @@ export default function HomeScreen() {
           handleRefresh={onRefresh}
           isRefreshing={refreshing}
           setShowSettings={setShowSettings}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
         />
 
         <CurrentWeather 
@@ -133,6 +137,7 @@ export default function HomeScreen() {
           tideData={tideData}
           isDark={isDark}
           windUnit={windUnit}
+          selectedDate={selectedDate}
         />
 
         <HourlyForecast 

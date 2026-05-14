@@ -23,6 +23,7 @@ export function useWeather() {
   const [lastFetchedTime, setLastFetchedTime] = useState<Date | null>(null);
   const [locationState, setLocationState] = useState<LocationState | null>(null);
   const [language, setLanguageState] = useState(i18n.locale);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,18 +56,52 @@ export function useWeather() {
     }
   }, [searchQuery]);
 
-  const fetchWeather = async (lat: number, lon: number, city: string, overrideUnit?: TemperatureUnit) => {
+  const fetchWeather = async (lat: number, lon: number, city: string, overrideUnit?: TemperatureUnit, targetDate?: Date | null) => {
     try {
       setError(null);
       const activeUnit = overrideUnit || unit;
       const unitParam = activeUnit === 'F' ? '&temperature_unit=fahrenheit' : '';
+      const activeDate = targetDate !== undefined ? targetDate : selectedDate;
       
-      const res = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weathercode,precipitation_probability,windspeed_10m,relativehumidity_2m,uv_index,apparent_temperature,is_day&timezone=auto&forecast_days=14${unitParam}`,
-        { cache: 'no-store' }
-      );
+      const now = new Date();
+      // Consider historical if the date is more than 5 days in the past (Open-Meteo forecast handles up to ~5 days past, archive handles further back)
+      const isHistorical = activeDate && (now.getTime() - activeDate.getTime() > 5 * 24 * 60 * 60 * 1000);
+      
+      let url = '';
+      if (isHistorical && activeDate) {
+        const startStr = activeDate.toISOString().split('T')[0];
+        const endDate = new Date(activeDate);
+        endDate.setDate(endDate.getDate() + 13);
+        const endStr = endDate.toISOString().split('T')[0];
+        
+        url = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${startStr}&end_date=${endStr}&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weathercode,windspeed_10m,relativehumidity_2m,apparent_temperature,is_day&timezone=auto${unitParam}`;
+      } else {
+        url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weathercode,precipitation_probability,windspeed_10m,relativehumidity_2m,uv_index,apparent_temperature,is_day&timezone=auto&forecast_days=14${unitParam}`;
+      }
+      
+      const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) throw new Error('Network response was not ok');
       const data = await res.json();
+      
+      if (isHistorical && activeDate) {
+        const startStr = activeDate.toISOString().split('T')[0];
+        const targetTimeStr = startStr + "T12:00";
+        let hourIndex = data.hourly.time.indexOf(targetTimeStr);
+        if (hourIndex === -1) hourIndex = 12;
+
+        data.current_weather = {
+          temperature: data.hourly.temperature_2m[hourIndex],
+          windspeed: data.hourly.windspeed_10m[hourIndex],
+          weathercode: data.hourly.weathercode[hourIndex],
+          is_day: data.hourly.is_day[hourIndex],
+          time: data.hourly.time[hourIndex],
+          is_historical: true
+        };
+        
+        // Patch missing arrays for UI
+        data.hourly.precipitation_probability = new Array(data.hourly.time.length).fill(0);
+        data.hourly.uv_index = new Array(data.hourly.time.length).fill(0);
+      }
       
       const now = new Date();
       setWeatherData(data);
@@ -440,5 +475,13 @@ export function useWeather() {
     tideData,
     language,
     changeLanguage,
+    selectedDate,
+    setSelectedDate: async (date: Date | null) => {
+      setSelectedDate(date);
+      setLoading(true);
+      if (locationState) {
+        await fetchWeather(locationState.lat, locationState.lon, locationState.city, unit, date);
+      }
+    }
   };
 }
