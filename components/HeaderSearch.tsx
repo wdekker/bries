@@ -76,13 +76,13 @@ export function HeaderSearch({
           </View>
         ) : (
           <View style={styles.headerActions}>
-            <TouchableOpacity onPress={() => setIsSearchExpanded(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
+            <TouchableOpacity testID="search-button" onPress={() => setIsSearchExpanded(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
               <Search size={22} color={textColor} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleCurrentLocation} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
+            <TouchableOpacity testID="location-button" onPress={handleCurrentLocation} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
               <MapPin size={22} color={textColor} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleRefresh} style={[styles.iconBtn, { backgroundColor: cardBg }]} disabled={isRefreshing}>
+            <TouchableOpacity testID="refresh-button" onPress={handleRefresh} style={[styles.iconBtn, { backgroundColor: cardBg }]} disabled={isRefreshing}>
               <Animated.View style={{ transform: [{ rotate: spin }] }}>
                 <RefreshCcw size={22} color={textColor} />
               </Animated.View>
@@ -90,7 +90,7 @@ export function HeaderSearch({
             <TouchableOpacity testID="calendar-button" onPress={() => setShowDatePicker(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
               <Calendar size={22} color={textColor} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setShowSettings(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
+            <TouchableOpacity testID="settings-button" onPress={() => setShowSettings(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
               <SettingsIcon size={22} color={textColor} />
             </TouchableOpacity>
           </View>

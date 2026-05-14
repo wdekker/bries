@@ -80,4 +80,47 @@ describe('HeaderSearch Component - Time Travel', () => {
     fireEvent.press(getByText('Cancel'));
     expect(queryByText('Select Date')).toBeNull();
   });
+
+  it('calls correct functions when other header buttons are clicked', () => {
+    const setIsSearchExpanded = jest.fn();
+    const handleCurrentLocation = jest.fn();
+    const handleRefresh = jest.fn();
+    const setShowSettings = jest.fn();
+    
+    const { getByTestId } = render(
+      <HeaderSearch 
+        isDark={false}
+        isSearchExpanded={false}
+        setIsSearchExpanded={setIsSearchExpanded}
+        searchQuery=""
+        setSearchQuery={jest.fn()}
+        searchResults={[]}
+        setSearchResults={jest.fn()}
+        handleSelectCity={jest.fn()}
+        handleCurrentLocation={handleCurrentLocation}
+        handleRefresh={handleRefresh}
+        isRefreshing={false}
+        setShowSettings={setShowSettings}
+        selectedDate={null}
+        setSelectedDate={jest.fn()}
+        language="en"
+      />
+    );
+
+    // Search button
+    fireEvent.press(getByTestId('search-button'));
+    expect(setIsSearchExpanded).toHaveBeenCalledWith(true);
+
+    // Location button
+    fireEvent.press(getByTestId('location-button'));
+    expect(handleCurrentLocation).toHaveBeenCalled();
+
+    // Refresh button
+    fireEvent.press(getByTestId('refresh-button'));
+    expect(handleRefresh).toHaveBeenCalled();
+
+    // Settings button
+    fireEvent.press(getByTestId('settings-button'));
+    expect(setShowSettings).toHaveBeenCalledWith(true);
+  });
 });
