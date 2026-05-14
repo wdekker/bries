@@ -124,7 +124,7 @@ export const HourlyForecast = React.memo(function HourlyForecast({ hourly, daily
       <HourlyScrollList items={items} windUnit={windUnit} isDark={isDark} />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   hourlyContainer: { width: '100%', marginBottom: 30 },
