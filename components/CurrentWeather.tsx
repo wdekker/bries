@@ -56,13 +56,16 @@ export const CurrentWeather = React.memo(function CurrentWeather({ weatherData, 
       return t >= today.getTime() && t < tomorrow.getTime();
     });
   }
+  const displayDate = selectedDate || new Date();
+  const weekday = displayDate.toLocaleDateString(i18n.locale, { weekday: 'long' });
+  const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
   
   return (
     <View style={styles.currentWeather}>
       <Text style={[styles.cityText, { color: textColor }]}>{cityName}</Text>
       <Text style={[styles.dateText, { color: subTextColor, marginBottom: localTimeStr ? 4 : 20 }]}>
-        {i18n.t('today')}, {new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long' })}
-        {lastFetchedTime ? ` • ${i18n.t('updated')} ${lastFetchedTime.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}` : ''}
+        {capitalizedWeekday}, {displayDate.toLocaleDateString(i18n.locale, { day: 'numeric', month: 'long' })}
+        {lastFetchedTime ? ` • ${i18n.t('updated')} ${lastFetchedTime.toLocaleTimeString(i18n.locale, { hour: '2-digit', minute: '2-digit' })}` : ''}
       </Text>
       {showMoonPhase && moonPhaseStr && (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: localTimeStr ? 4 : 20 }}>
