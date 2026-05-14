@@ -7,6 +7,10 @@ jest.mock('expo-location', () => ({
   reverseGeocodeAsync: jest.fn().mockResolvedValue([{ city: 'Berlin' }]),
 }));
 
+jest.mock('expo-localization', () => ({
+  getLocales: jest.fn().mockReturnValue([{ languageCode: 'en' }]),
+}));
+
 jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn().mockResolvedValue(null),
   setItem: jest.fn().mockResolvedValue(null),
@@ -25,6 +29,7 @@ jest.mock('lucide-react-native', () => ({
   CloudRain: 'CloudRainIcon',
   Cloud: 'CloudIcon',
   CloudSun: 'CloudSunIcon',
+  CloudMoon: 'CloudMoonIcon',
   CloudFog: 'CloudFogIcon',
   CloudDrizzle: 'CloudDrizzleIcon',
   CloudSnow: 'CloudSnowIcon',
@@ -33,5 +38,14 @@ jest.mock('lucide-react-native', () => ({
   Search: 'SearchIcon',
   MapPin: 'MapPinIcon',
   X: 'XIcon',
-  Settings: 'SettingsIcon'
+  Settings: 'SettingsIcon',
+  Moon: 'MoonIcon',
+  Waves: 'WavesIcon',
+  Sunrise: 'SunriseIcon',
+  Sunset: 'SunsetIcon',
+  ChevronDown: 'ChevronDownIcon',
+  ChevronUp: 'ChevronUpIcon',
+  Calendar: 'CalendarIcon',
+  Thermometer: 'ThermometerIcon',
+  Droplets: 'DropletsIcon'
 }));

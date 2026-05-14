@@ -11,6 +11,11 @@ describe('CurrentWeather Component', () => {
         cityName="Berlin" 
         lastFetchedTime={new Date('2023-10-10T12:00:00Z')} 
         isDark={true} 
+        showMoonPhase={true}
+        showTides={true}
+        tideData={null}
+        windUnit="km/h"
+        selectedDate={null}
       />
     );
 

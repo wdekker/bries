@@ -103,9 +103,8 @@ export function useWeather() {
         data.hourly.uv_index = new Array(data.hourly.time.length).fill(0);
       }
       
-      const now = new Date();
       setWeatherData(data);
-      setLastFetchedTime(now);
+      setLastFetchedTime(new Date());
       setCityName(city);
       setLocationState(prev => ({ lat, lon, city, isAutoLocation: prev ? prev.isAutoLocation : false }));
       setLoading(false);
