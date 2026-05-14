@@ -13,13 +13,13 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   setItem: jest.fn().mockResolvedValue(null),
 }));
 
-global.fetch = jest.fn(() =>
+globalThis.fetch = jest.fn(() =>
   Promise.resolve({
     ok: true,
     json: () => Promise.resolve({
       latitude: 52.52,
       longitude: 13.41,
-      current_weather: { temperature: 15.5, weathercode: 1, windspeed: 10 },
+      current_weather: { temperature: 15.5, weathercode: 1, windspeed: 10, is_day: 1, time: '2023-10-10T12:00' },
       daily: { temperature_2m_max: [20], temperature_2m_min: [10], time: ['2023-10-10'] },
       hourly: { temperature_2m: [15], time: ['2023-10-10T12:00'], weathercode: [1] }
     }),
