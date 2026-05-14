@@ -19,12 +19,13 @@ interface HeaderSearchProps {
   setShowSettings: (val: boolean) => void;
   selectedDate: Date | null;
   setSelectedDate: (date: Date | null) => void;
+  language: string;
 }
 
 export function HeaderSearch({
   isDark, isSearchExpanded, setIsSearchExpanded, searchQuery, setSearchQuery, 
   searchResults, setSearchResults, handleSelectCity, handleCurrentLocation, handleRefresh, isRefreshing, setShowSettings,
-  selectedDate, setSelectedDate
+  selectedDate, setSelectedDate, language
 }: HeaderSearchProps) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const textColor = isDark ? '#f8fafc' : '#ffffff';

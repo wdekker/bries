@@ -106,6 +106,7 @@ export default function HomeScreen() {
       />
 
       <ScrollView 
+        key={language}
         contentContainerStyle={styles.scrollContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={textColor} colors={[textColor]} />
@@ -126,6 +127,7 @@ export default function HomeScreen() {
           setShowSettings={setShowSettings}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          language={language}
         />
 
         <CurrentWeather 
