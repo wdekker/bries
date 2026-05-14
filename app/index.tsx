@@ -10,6 +10,7 @@ import { HeaderSearch } from '../components/HeaderSearch';
 import { CurrentWeather } from '../components/CurrentWeather';
 import { HourlyForecast } from '../components/HourlyForecast';
 import { DailyForecast } from '../components/DailyForecast';
+import { OfflineBanner } from '../components/OfflineBanner';
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
@@ -19,6 +20,7 @@ export default function HomeScreen() {
     weatherData,
     loading,
     error,
+    isOffline,
     refreshing,
     cityName,
     lastFetchedTime,
@@ -85,6 +87,7 @@ export default function HomeScreen() {
 
   return (
     <LinearGradient colors={gradientColors} style={styles.container}>
+      {isOffline && <OfflineBanner lastFetchedTime={lastFetchedTime} />}
       <SettingsModal 
         visible={showSettings} 
         onClose={() => setShowSettings(false)} 

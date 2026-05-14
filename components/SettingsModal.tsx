@@ -25,7 +25,7 @@ interface SettingsModalProps {
   onChangeLanguage: (lang: string) => void;
 }
 
-export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, showSunEvents, onToggleSunEvents, showMoonPhase, onToggleMoonPhase, showTides, onToggleTides, stormglassApiKey, onChangeApiKey, isDark, language, onChangeLanguage }: SettingsModalProps) {
+export const SettingsModal = React.memo(function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, showSunEvents, onToggleSunEvents, showMoonPhase, onToggleMoonPhase, showTides, onToggleTides, stormglassApiKey, onChangeApiKey, isDark, language, onChangeLanguage }: SettingsModalProps) {
   const { isInstallable, promptInstall } = usePWAInstall();
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
 
@@ -236,7 +236,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
       </View>
     </Modal>
   );
-}
+});
 
 const styles = StyleSheet.create({
   modalOverlay: {

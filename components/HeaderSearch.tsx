@@ -22,8 +22,9 @@ interface HeaderSearchProps {
   language: string;
 }
 
-export function HeaderSearch({
-  isDark, isSearchExpanded, setIsSearchExpanded, searchQuery, setSearchQuery, 
+export const HeaderSearch = React.memo(function HeaderSearch({
+  isDark,
+  isSearchExpanded, setIsSearchExpanded, searchQuery, setSearchQuery, 
   searchResults, setSearchResults, handleSelectCity, handleCurrentLocation, handleRefresh, isRefreshing, setShowSettings,
   selectedDate, setSelectedDate, language
 }: HeaderSearchProps) {
@@ -167,7 +168,7 @@ export function HeaderSearch({
       )}
     </>
   );
-}
+});
 
 const styles = StyleSheet.create({
   headerRow: {

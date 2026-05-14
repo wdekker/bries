@@ -16,7 +16,7 @@ interface DailyForecastProps {
   isDark: boolean;
 }
 
-export function DailyForecast({ daily, hourly, windUnit, showSunEvents, showMoonPhase, tideData, isDark }: DailyForecastProps) {
+export const DailyForecast = React.memo(function DailyForecast({ daily, hourly, windUnit, showSunEvents, showMoonPhase, tideData, isDark }: DailyForecastProps) {
   const [expandedDayIndex, setExpandedDayIndex] = useState<number | null>(null);
 
   const textColor = isDark ? '#f8fafc' : '#ffffff';
@@ -90,7 +90,7 @@ export function DailyForecast({ daily, hourly, windUnit, showSunEvents, showMoon
       })}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   forecastContainer: { width: '100%' },

@@ -17,7 +17,7 @@ interface CurrentWeatherProps {
   selectedDate: Date | null;
 }
 
-export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoonPhase, showTides, tideData, isDark, windUnit, selectedDate }: CurrentWeatherProps) {
+export const CurrentWeather = React.memo(function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoonPhase, showTides, tideData, isDark, windUnit, selectedDate }: CurrentWeatherProps) {
   const isDay = weatherData.current_weather.is_day === 1;
   const currentInfo = getWeatherInfo(weatherData.current_weather.weathercode, isDay);
   const CurrentIcon = currentInfo.icon;
@@ -144,7 +144,7 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoo
       )}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   currentWeather: { alignItems: 'center', marginTop: 10, marginBottom: 20 },

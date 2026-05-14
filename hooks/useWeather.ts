@@ -37,29 +37,55 @@ const getAccurateLocation = async (): Promise<Location.LocationObject> => {
   throw new Error('Failed to get location');
 };
 
-export function useWeather() {
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
-  const [cityName, setCityName] = useState('Locating...');
-  const [lastFetchedTime, setLastFetchedTime] = useState<Date | null>(null);
-  const [locationState, setLocationState] = useState<LocationState | null>(null);
-  const [language, setLanguageState] = useState(i18n.locale);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+import { useWeatherStore } from '../store/weatherStore';
 
-  const [unit, setUnit] = useState<TemperatureUnit>('C');
-  const [windUnit, setWindUnit] = useState<WindSpeedUnit>('km/h');
-  const [showSunEvents, setShowSunEvents] = useState(true);
-  const [showMoonPhase, setShowMoonPhase] = useState(true);
-  const [showTides, setShowTides] = useState(false);
-  const [stormglassApiKey, setStormglassApiKey] = useState('');
-  const [tideData, setTideData] = useState<TideData | null>(null);
-  const [showSettings, setShowSettings] = useState(false);
+export function useWeather() {
+  const store = useWeatherStore();
+  
+  const weatherData = store.weatherData;
+  const setWeatherData = store.setWeatherData;
+  const loading = store.loading;
+  const setLoading = store.setLoading;
+  const error = store.error;
+  const setError = store.setError;
+  const isOffline = store.isOffline;
+  const setIsOffline = store.setIsOffline;
+  const refreshing = store.refreshing;
+  const setRefreshing = store.setRefreshing;
+  const cityName = store.cityName;
+  const setCityName = store.setCityName;
+  const lastFetchedTime = store.lastFetchedTime;
+  const setLastFetchedTime = store.setLastFetchedTime;
+  const locationState = store.locationState;
+  const setLocationState = store.setLocationState;
+  const language = store.language;
+  const setLanguageState = store.setLanguage;
+  const selectedDate = store.selectedDate;
+  const setSelectedDate = store.setSelectedDate;
+  
+  const isSearchExpanded = store.isSearchExpanded;
+  const setIsSearchExpanded = store.setIsSearchExpanded;
+  const searchQuery = store.searchQuery;
+  const setSearchQuery = store.setSearchQuery;
+  const searchResults = store.searchResults;
+  const setSearchResults = store.setSearchResults;
+
+  const unit = store.unit;
+  const setUnit = store.setUnit;
+  const windUnit = store.windUnit;
+  const setWindUnit = store.setWindUnit;
+  const showSunEvents = store.showSunEvents;
+  const setShowSunEvents = store.setShowSunEvents;
+  const showMoonPhase = store.showMoonPhase;
+  const setShowMoonPhase = store.setShowMoonPhase;
+  const showTides = store.showTides;
+  const setShowTides = store.setShowTides;
+  const stormglassApiKey = store.stormglassApiKey;
+  const setStormglassApiKey = store.setStormglassApiKey;
+  const tideData = store.tideData;
+  const setTideData = store.setTideData;
+  const showSettings = store.showSettings;
+  const setShowSettings = store.setShowSettings;
 
   useEffect(() => {
     if (searchQuery.trim().length > 1) {
@@ -131,6 +157,7 @@ export function useWeather() {
       setCityName(city);
       setLocationState(prev => ({ lat, lon, city, isAutoLocation: prev ? prev.isAutoLocation : false }));
       setLoading(false);
+      setIsOffline(false);
 
       try {
         const savedShowTidesStr = await AsyncStorage.getItem(SHOW_TIDES_KEY);
@@ -192,7 +219,23 @@ export function useWeather() {
       }
     } catch (err: any) {
       console.error('Error fetching weather:', err);
-      setError('Unable to fetch weather data. Please check your connection.');
+      // Fallback logic
+      try {
+        const cachedStr = await AsyncStorage.getItem(CACHE_KEY);
+        if (cachedStr) {
+          const cached = JSON.parse(cachedStr);
+          setWeatherData(cached.data);
+          setCityName(cached.city);
+          setLocationState({ lat: cached.lat, lon: cached.lon, city: cached.city, isAutoLocation: false });
+          setLastFetchedTime(new Date(cached.time));
+          setIsOffline(true);
+          setError(null);
+        } else {
+          setError('Unable to fetch weather data. Please check your connection.');
+        }
+      } catch (cacheErr) {
+        setError('Unable to fetch weather data. Please check your connection.');
+      }
       setLoading(false); 
     }
   };
@@ -361,6 +404,7 @@ export function useWeather() {
           setCityName(cached.city);
           setLocationState({ lat: cached.lat, lon: cached.lon, city: cached.city, isAutoLocation: false });
           setLastFetchedTime(new Date(cached.time));
+          setIsOffline(true);
           setLoading(false); 
         }
       } catch (e) {
@@ -456,6 +500,7 @@ export function useWeather() {
     weatherData,
     loading,
     error,
+    isOffline,
     refreshing,
     cityName,
     lastFetchedTime,

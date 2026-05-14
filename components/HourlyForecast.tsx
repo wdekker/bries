@@ -101,7 +101,7 @@ interface HourlyForecastProps {
   isDark: boolean;
 }
 
-export function HourlyForecast({ hourly, daily, currentHourString, windUnit, showSunEvents, tideData, isDark }: HourlyForecastProps) {
+export const HourlyForecast = React.memo(function HourlyForecast({ hourly, daily, currentHourString, windUnit, showSunEvents, tideData, isDark }: HourlyForecastProps) {
   const textColor = isDark ? '#f8fafc' : '#ffffff';
 
   let startHourIndexToday = 0;
