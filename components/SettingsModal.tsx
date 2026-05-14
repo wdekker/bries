@@ -38,7 +38,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
 
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
-      <View style={styles.modalOverlay}>
+      <View key={language} style={styles.modalOverlay}>
         <View style={[styles.modalContent, { backgroundColor: isDark ? '#1e293b' : '#ffffff' }]}>
           <View style={styles.modalHeader}>
             <Text style={[styles.modalTitle, { color: isDark ? '#ffffff' : '#000000' }]}>{i18n.t('settings')}</Text>
