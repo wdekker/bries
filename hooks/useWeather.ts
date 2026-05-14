@@ -404,7 +404,6 @@ export function useWeather() {
           setCityName(cached.city);
           setLocationState({ lat: cached.lat, lon: cached.lon, city: cached.city, isAutoLocation: false });
           setLastFetchedTime(new Date(cached.time));
-          setIsOffline(true);
           setLoading(false); 
         }
       } catch (e) {
