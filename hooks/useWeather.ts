@@ -14,6 +14,29 @@ const SHOW_TIDES_KEY = '@weather_show_tides';
 const TIDES_API_KEY = '@weather_tides_api_key';
 const TIDES_CACHE_KEY = '@weather_tides_cache';
 
+const getAccurateLocation = async (): Promise<Location.LocationObject> => {
+  const steps = [
+    { accuracy: Location.Accuracy.Highest, timeout: 4000 },
+    { accuracy: Location.Accuracy.High, timeout: 3000 },
+    { accuracy: Location.Accuracy.Balanced, timeout: 3000 }
+  ];
+
+  for (const step of steps) {
+    try {
+      const locationPromise = Location.getCurrentPositionAsync({ accuracy: step.accuracy });
+      const timeoutPromise = new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error('Location timeout')), step.timeout)
+      );
+      return await Promise.race([locationPromise, timeoutPromise]) as Location.LocationObject;
+    } catch (error) {
+      if (step === steps[steps.length - 1]) {
+        throw error;
+      }
+    }
+  }
+  throw new Error('Failed to get location');
+};
+
 export function useWeather() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -191,11 +214,7 @@ export function useWeather() {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {
-        const locationPromise = Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Balanced
-        });
-        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Location timeout')), 5000));
-        let location = await Promise.race([locationPromise, timeoutPromise]) as Location.LocationObject;
+        let location = await getAccurateLocation();
         const lat = location.coords.latitude;
         const lon = location.coords.longitude;
         let city = 'Local Weather';
@@ -355,11 +374,7 @@ export function useWeather() {
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status === 'granted') {
-          const locationPromise = Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.Balanced
-          });
-          const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Location timeout')), 5000));
-          let location = await Promise.race([locationPromise, timeoutPromise]) as Location.LocationObject;
+          let location = await getAccurateLocation();
           lat = location.coords.latitude;
           lon = location.coords.longitude;
           
@@ -413,9 +428,7 @@ export function useWeather() {
           try {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status === 'granted') {
-              const locationPromise = Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-              const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Location timeout')), 5000));
-              let location = await Promise.race([locationPromise, timeoutPromise]) as Location.LocationObject;
+              let location = await getAccurateLocation();
               const lat = location.coords.latitude;
               const lon = location.coords.longitude;
               fetchWeather(lat, lon, locationState.city);
