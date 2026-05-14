@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { StyleSheet, Text, ScrollView, useColorScheme, Platform, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { useWeather } from '../hooks/useWeather';
 import { i18n } from '../utils/i18n';
 
-import { SettingsModal } from '../components/SettingsModal';
 import { HeaderSearch } from '../components/HeaderSearch';
 import { CurrentWeather } from '../components/CurrentWeather';
-import { HourlyForecast } from '../components/HourlyForecast';
-import { DailyForecast } from '../components/DailyForecast';
 import { OfflineBanner } from '../components/OfflineBanner';
+
+const SettingsModal = React.lazy(() => import('../components/SettingsModal').then(m => ({ default: m.SettingsModal })));
+const HourlyForecast = React.lazy(() => import('../components/HourlyForecast').then(m => ({ default: m.HourlyForecast })));
+const DailyForecast = React.lazy(() => import('../components/DailyForecast').then(m => ({ default: m.DailyForecast })));
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
@@ -80,17 +81,19 @@ export default function HomeScreen() {
   return (
     <LinearGradient colors={gradientColors} style={styles.container}>
       {isOffline && <OfflineBanner lastFetchedTime={lastFetchedTime} />}
-      <SettingsModal 
-        visible={showSettings} 
-        onClose={() => setShowSettings(false)} 
-        onToggleUnit={toggleUnit} 
-        onToggleWindUnit={toggleWindUnit}
-        onToggleSunEvents={toggleSunEvents}
-        onToggleMoonPhase={toggleMoonPhase}
-        onToggleTides={toggleShowTides}
-        onChangeApiKey={saveTideApiKey}
-        onChangeLanguage={changeLanguage}
-      />
+      <Suspense fallback={null}>
+        <SettingsModal 
+          visible={showSettings} 
+          onClose={() => setShowSettings(false)} 
+          onToggleUnit={toggleUnit} 
+          onToggleWindUnit={toggleWindUnit}
+          onToggleSunEvents={toggleSunEvents}
+          onToggleMoonPhase={toggleMoonPhase}
+          onToggleTides={toggleShowTides}
+          onChangeApiKey={saveTideApiKey}
+          onChangeLanguage={changeLanguage}
+        />
+      </Suspense>
 
       <ScrollView 
         key={language}
@@ -118,8 +121,10 @@ export default function HomeScreen() {
         />
 
         <CurrentWeather />
-        <HourlyForecast />
-        <DailyForecast />
+        <Suspense fallback={null}>
+          <HourlyForecast />
+          <DailyForecast />
+        </Suspense>
 
       </ScrollView>
     </LinearGradient>

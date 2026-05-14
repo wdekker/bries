@@ -17,6 +17,9 @@ export default function RootLayout() {
         <meta name="description" content="A beautiful, high-performance, cross-platform weather application built with Expo and React Native." />
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon.png" />
+        <link rel="preconnect" href="https://api.open-meteo.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://api.bigdatacloud.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://api-bdc.io" crossOrigin="anonymous" />
         <meta name="theme-color" content="#0f172a" />
         <meta property="og:title" content="Bries - Weather Forecast" />
         <meta property="og:description" content="A beautiful, cross-platform weather application." />
