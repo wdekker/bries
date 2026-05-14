@@ -1,7 +1,6 @@
+/* eslint-disable no-undef */
 jest.mock('expo/src/winter/runtime.native.ts', () => ({}));
 jest.mock('expo/src/winter/installGlobal.ts', () => ({}));
-
-/* eslint-env jest */
 jest.mock('expo-location', () => ({
   requestForegroundPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
   getCurrentPositionAsync: jest.fn().mockResolvedValue({ coords: { latitude: 52.52, longitude: 13.41 } }),
