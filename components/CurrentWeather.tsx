@@ -121,7 +121,7 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoo
                   {new Date(tide.time).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
                 </Text>
                 <Text style={{ color: textColor, fontSize: 14, fontWeight: '500', marginLeft: 8 }}>
-                  {tide.type === 'high' ? 'High' : 'Low'}
+                  {tide.type === 'high' ? i18n.t('highTide') : i18n.t('lowTide')}
                 </Text>
                 <Text style={{ color: subTextColor, fontSize: 12, marginLeft: 'auto' }}>
                   {tide.height.toFixed(2)}m
