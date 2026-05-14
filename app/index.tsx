@@ -3,6 +3,7 @@ import { StyleSheet, Text, ScrollView, useColorScheme, Platform, ActivityIndicat
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { useWeather } from '../hooks/useWeather';
+import { i18n } from '../utils/i18n';
 
 import { SettingsModal } from '../components/SettingsModal';
 import { HeaderSearch } from '../components/HeaderSearch';
@@ -45,6 +46,8 @@ export default function HomeScreen() {
     stormglassApiKey,
     saveTideApiKey,
     tideData,
+    language,
+    changeLanguage,
   } = useWeather();
 
   const gradientColors = (isDark ? ['#0f172a', '#1e293b'] : ['#38bdf8', '#0ea5e9']) as readonly [string, string, ...string[]];
@@ -55,7 +58,7 @@ export default function HomeScreen() {
     return (
       <LinearGradient colors={gradientColors} style={[styles.container, styles.center]}>
         <ActivityIndicator size="large" color={textColor} />
-        <Text style={{ color: textColor, marginTop: 10 }}>Loading...</Text>
+        <Text style={{ color: textColor, marginTop: 10 }}>{i18n.t('loading')}</Text>
       </LinearGradient>
     );
   }
@@ -70,7 +73,7 @@ export default function HomeScreen() {
           style={{ backgroundColor: 'rgba(255,255,255,0.2)', padding: 12, borderRadius: 8, paddingHorizontal: 24 }}
           onPress={() => onRefresh()}
         >
-          <Text style={{ color: textColor, fontWeight: '600', fontSize: 16 }}>Retry</Text>
+          <Text style={{ color: textColor, fontWeight: '600', fontSize: 16 }}>{i18n.t('retry')}</Text>
         </TouchableOpacity>
       </LinearGradient>
     );
@@ -96,6 +99,8 @@ export default function HomeScreen() {
         stormglassApiKey={stormglassApiKey}
         onChangeApiKey={saveTideApiKey}
         isDark={isDark} 
+        language={language}
+        onChangeLanguage={changeLanguage}
       />
 
       <ScrollView 

@@ -4,6 +4,7 @@ import { Moon } from 'lucide-react-native';
 import { getWeatherInfo, generateHourlyItems, getMoonPhaseInfo, getLunarPhase } from '../utils/weather';
 import { WeatherData, WindSpeedUnit, TideData } from '../types/weather';
 import { HourlyScrollList } from './HourlyForecast';
+import { i18n } from '../utils/i18n';
 
 interface DailyForecastProps {
   daily: WeatherData['daily'];
@@ -42,7 +43,7 @@ export function DailyForecast({ daily, hourly, windUnit, showSunEvents, showMoon
 
   return (
     <View style={styles.forecastContainer}>
-      <Text style={[styles.forecastTitle, { color: textColor }]}>13-Day Forecast</Text>
+      <Text style={[styles.forecastTitle, { color: textColor }]}>{i18n.t('dailyForecast')}</Text>
       
       {forecast.map((item: any, i: number) => {
         const Icon = item.icon;

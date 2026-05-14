@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Wind, Moon, Waves } from 'lucide-react-native';
 import { getWeatherInfo, formatWindSpeed, getMoonPhaseInfo, getLunarPhase } from '../utils/weather';
 import { WeatherData, WindSpeedUnit, TideData } from '../types/weather';
+import { i18n } from '../utils/i18n';
 
 interface CurrentWeatherProps {
   weatherData: WeatherData;
@@ -16,7 +17,8 @@ interface CurrentWeatherProps {
 }
 
 export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoonPhase, showTides, tideData, isDark, windUnit }: CurrentWeatherProps) {
-  const currentInfo = getWeatherInfo(weatherData.current_weather.weathercode);
+  const isDay = weatherData.current_weather.is_day === 1;
+  const currentInfo = getWeatherInfo(weatherData.current_weather.weathercode, isDay);
   const CurrentIcon = currentInfo.icon;
   
   const textColor = isDark ? '#f8fafc' : '#ffffff';
@@ -58,8 +60,8 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoo
     <View style={styles.currentWeather}>
       <Text style={[styles.cityText, { color: textColor }]}>{cityName}</Text>
       <Text style={[styles.dateText, { color: subTextColor, marginBottom: localTimeStr ? 4 : 20 }]}>
-        Today, {new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long' })}
-        {lastFetchedTime ? ` • Updated ${lastFetchedTime.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}` : ''}
+        {i18n.t('today')}, {new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long' })}
+        {lastFetchedTime ? ` • ${i18n.t('updated')} ${lastFetchedTime.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}` : ''}
       </Text>
       {showMoonPhase && moonPhaseStr && (
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: localTimeStr ? 4 : 20 }}>
@@ -69,7 +71,7 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoo
       )}
       {localTimeStr && (
         <Text style={{ color: subTextColor, fontSize: 14, fontWeight: '500', marginBottom: 20 }}>
-          Local Time: {localTimeStr} ({weatherData.timezone_abbreviation || weatherData.timezone})
+          {i18n.t('localTime')}: {localTimeStr} ({weatherData.timezone_abbreviation || weatherData.timezone})
         </Text>
       )}
       
@@ -87,21 +89,21 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoo
           <Text style={[styles.statValue, { color: textColor }]}>
             {formatWindSpeed(weatherData.current_weather.windspeed, windUnit)}
           </Text>
-          <Text style={[styles.statLabel, { color: subTextColor }]}>Wind</Text>
+          <Text style={[styles.statLabel, { color: subTextColor }]}>{i18n.t('wind')}</Text>
         </View>
         <View style={styles.statDivider} />
         <View style={styles.stat}>
           <Text style={[styles.statValue, { color: textColor, fontSize: 18 }]}>
             {Math.round(weatherData.daily.temperature_2m_max[0])}°
           </Text>
-          <Text style={[styles.statLabel, { color: subTextColor }]}>High</Text>
+          <Text style={[styles.statLabel, { color: subTextColor }]}>{i18n.t('high')}</Text>
         </View>
          <View style={styles.statDivider} />
         <View style={styles.stat}>
           <Text style={[styles.statValue, { color: textColor, fontSize: 18 }]}>
             {Math.round(weatherData.daily.temperature_2m_min[0])}°
           </Text>
-          <Text style={[styles.statLabel, { color: subTextColor }]}>Low</Text>
+          <Text style={[styles.statLabel, { color: subTextColor }]}>{i18n.t('low')}</Text>
         </View>
       </View>
 
@@ -109,7 +111,7 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoo
         <View style={[styles.tideContainer, { backgroundColor: cardBg }]}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
             <Waves size={18} color={isDark ? '#93c5fd' : '#3b82f6'} style={{ marginRight: 6 }} />
-            <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>Today&apos;s Tides</Text>
+            <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{i18n.t('todaysTides')}</Text>
           </View>
           
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
@@ -129,7 +131,7 @@ export function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoo
           </View>
           
           <Text style={{ color: subTextColor, fontSize: 11, marginTop: 8, textAlign: 'center', opacity: 0.7 }}>
-            Station: {tideData.meta.station.name} ({tideData.meta.station.distance}km) • Retrieved: {new Date(tideData.retrievedAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+            {i18n.t('station')}: {tideData.meta.station.name} ({tideData.meta.station.distance}km) • {i18n.t('retrieved')}: {new Date(tideData.retrievedAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
           </Text>
         </View>
       )}

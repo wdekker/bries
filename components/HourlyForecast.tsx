@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-nati
 import { Sunrise, Sunset, Wind, ChevronDown, ChevronUp, Droplets, Umbrella, Thermometer, Sun, Waves } from 'lucide-react-native';
 import { formatWindSpeed, generateHourlyItems } from '../utils/weather';
 import { WeatherData, WindSpeedUnit, TideData } from '../types/weather';
+import { i18n } from '../utils/i18n';
 
 export function HourlyScrollList({ items, windUnit, isDark }: { items: any[], windUnit: WindSpeedUnit, isDark: boolean }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -57,7 +58,7 @@ export function HourlyScrollList({ items, windUnit, isDark }: { items: any[], wi
               <View key={`sun-${index}`} style={[styles.hourlyItem, { backgroundColor: cardBg, justifyContent: 'center' }]}>
                 <Text style={[styles.hourlyTime, { color: subTextColor }]}>{item.timeStr}</Text>
                 <SunIcon size={32} color={isSunrise ? '#fbbf24' : '#fb923c'} style={{ marginVertical: 10 }} />
-                <Text style={[styles.hourlyTime, { color: textColor, fontWeight: '600' }]}>{isSunrise ? 'Sunrise' : 'Sunset'}</Text>
+                <Text style={[styles.hourlyTime, { color: textColor, fontWeight: '600' }]}>{isSunrise ? i18n.t('sunrise') : i18n.t('sunset')}</Text>
               </View>
             );
           }
@@ -68,7 +69,7 @@ export function HourlyScrollList({ items, windUnit, isDark }: { items: any[], wi
               <View key={`tide-${index}`} style={[styles.hourlyItem, { backgroundColor: cardBg, justifyContent: 'center' }]}>
                 <Text style={[styles.hourlyTime, { color: subTextColor }]}>{item.timeStr}</Text>
                 <Waves size={32} color={isHigh ? '#3b82f6' : '#93c5fd'} style={{ marginVertical: 10 }} />
-                <Text style={[styles.hourlyTime, { color: textColor, fontWeight: '600', fontSize: 13 }]}>{isHigh ? 'High Tide' : 'Low Tide'}</Text>
+                <Text style={[styles.hourlyTime, { color: textColor, fontWeight: '600', fontSize: 13 }]}>{isHigh ? i18n.t('highTide') : i18n.t('lowTide')}</Text>
                 <Text style={[styles.hourlyTime, { color: subTextColor, fontSize: 12, marginTop: 4 }]}>{item.height.toFixed(2)}m</Text>
               </View>
             );
@@ -83,7 +84,7 @@ export function HourlyScrollList({ items, windUnit, isDark }: { items: any[], wi
       >
         {showDetails ? <ChevronUp size={16} color={subTextColor} /> : <ChevronDown size={16} color={subTextColor} />}
         <Text style={{ color: subTextColor, fontSize: 13, fontWeight: '500', marginLeft: 4 }}>
-          {showDetails ? 'Hide Details' : 'More Details'}
+          {showDetails ? i18n.t('hideDetails') : i18n.t('moreDetails')}
         </Text>
       </TouchableOpacity>
     </View>
@@ -119,7 +120,7 @@ export function HourlyForecast({ hourly, daily, currentHourString, windUnit, sho
 
   return (
     <View style={styles.hourlyContainer}>
-      <Text style={[styles.hourlyTitle, { color: textColor }]}>Today</Text>
+      <Text style={[styles.hourlyTitle, { color: textColor }]}>{i18n.t('today')}</Text>
       <HourlyScrollList items={items} windUnit={windUnit} isDark={isDark} />
     </View>
   );

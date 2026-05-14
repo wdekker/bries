@@ -3,6 +3,7 @@ import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking, Switch, Platf
 import { X, Download, Sunrise, Moon, Waves } from 'lucide-react-native';
 import { TemperatureUnit, WindSpeedUnit } from '../types/weather';
 import { usePWAInstall } from '../hooks/usePWAInstall';
+import { i18n } from '../utils/i18n';
 
 interface SettingsModalProps {
   visible: boolean;
@@ -20,9 +21,11 @@ interface SettingsModalProps {
   stormglassApiKey: string;
   onChangeApiKey: (value: string) => void;
   isDark: boolean;
+  language: string;
+  onChangeLanguage: (lang: string) => void;
 }
 
-export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, showSunEvents, onToggleSunEvents, showMoonPhase, onToggleMoonPhase, showTides, onToggleTides, stormglassApiKey, onChangeApiKey, isDark }: SettingsModalProps) {
+export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, showSunEvents, onToggleSunEvents, showMoonPhase, onToggleMoonPhase, showTides, onToggleTides, stormglassApiKey, onChangeApiKey, isDark, language, onChangeLanguage }: SettingsModalProps) {
   const { isInstallable, promptInstall } = usePWAInstall();
 
   return (
@@ -30,14 +33,33 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { backgroundColor: isDark ? '#1e293b' : '#ffffff' }]}>
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: isDark ? '#ffffff' : '#000000' }]}>Settings</Text>
+            <Text style={[styles.modalTitle, { color: isDark ? '#ffffff' : '#000000' }]}>{i18n.t('settings')}</Text>
             <TouchableOpacity onPress={onClose}>
               <X size={24} color={isDark ? '#cbd5e1' : '#64748b'} />
             </TouchableOpacity>
           </View>
           
           <ScrollView style={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
-            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>Temperature Unit</Text>
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>{i18n.t('language')}</Text>
+            <View style={[styles.unitToggleRow, { flexWrap: 'wrap', gap: 8 }]}>
+              {['system', 'en', 'de', 'fr', 'nl'].map(lang => (
+                <TouchableOpacity 
+                  key={lang}
+                  style={[
+                    styles.unitBtn, 
+                    language === lang ? { backgroundColor: '#38bdf8' } : { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
+                    { minWidth: '30%', paddingVertical: 10 }
+                  ]}
+                  onPress={() => onChangeLanguage(lang)}
+                >
+                  <Text style={{ color: language === lang ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600', fontSize: 13 }}>
+                    {lang === 'system' ? i18n.t('system') : lang.toUpperCase()}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 16 }]}>{i18n.t('temperatureUnit')}</Text>
           <View style={styles.unitToggleRow}>
             <TouchableOpacity 
               style={[
@@ -47,7 +69,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
               ]}
               onPress={() => onToggleUnit('C')}
             >
-              <Text style={{ color: unit === 'C' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>Celsius (°C)</Text>
+              <Text style={{ color: unit === 'C' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>{i18n.t('celsius')}</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={[
@@ -57,11 +79,11 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
               ]}
               onPress={() => onToggleUnit('F')}
             >
-              <Text style={{ color: unit === 'F' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>Fahrenheit (°F)</Text>
+              <Text style={{ color: unit === 'F' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>{i18n.t('fahrenheit')}</Text>
             </TouchableOpacity>
           </View>
 
-          <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 16 }]}>Wind Speed Unit</Text>
+          <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 16 }]}>{i18n.t('windSpeedUnit')}</Text>
           <View style={styles.unitToggleRow}>
             <TouchableOpacity 
               style={[
@@ -99,24 +121,24 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
 
           {isInstallable && (
             <View style={styles.aboutContainer}>
-              <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>App Installation</Text>
+              <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>{i18n.t('appInstallation')}</Text>
               <TouchableOpacity 
                 onPress={promptInstall} 
                 style={[styles.linkButton, { backgroundColor: '#38bdf8', flexDirection: 'row', justifyContent: 'center' }]}
               >
                 <Download size={18} color="#ffffff" style={{ marginRight: 8 }} />
-                <Text style={[styles.linkText, { color: '#ffffff' }]}>Install Bries to Home Screen</Text>
+                <Text style={[styles.linkText, { color: '#ffffff' }]}>{i18n.t('installBries')}</Text>
               </TouchableOpacity>
             </View>
           )}
 
           <View style={styles.aboutContainer}>
-            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>Timeline Events</Text>
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>{i18n.t('timelineEvents')}</Text>
             
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Sunrise size={20} color={isDark ? '#fbbf24' : '#d97706'} style={{ marginRight: 8 }} />
-                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>Sunrise & Sunset</Text>
+                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>{i18n.t('sunriseAndSunset')}</Text>
               </View>
               <Switch
                 value={showSunEvents}
@@ -130,7 +152,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Moon size={20} color={isDark ? '#e2e8f0' : '#475569'} style={{ marginRight: 8 }} />
-                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>Moon Phase</Text>
+                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>{i18n.t('moonPhase')}</Text>
               </View>
               <Switch
                 value={showMoonPhase}
@@ -143,7 +165,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: showTides ? 8 : 8 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Waves size={20} color={isDark ? '#93c5fd' : '#3b82f6'} style={{ marginRight: 8 }} />
-                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>Tide Events</Text>
+                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>{i18n.t('tideEvents')}</Text>
               </View>
               <Switch
                 value={showTides}
@@ -173,17 +195,17 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
           </View>
 
           <View style={[styles.aboutContainer, isInstallable ? { marginTop: 0 } : {}]}>
-            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 10 }]}>About Bries</Text>
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 10 }]}>{i18n.t('aboutBries')}</Text>
             <Text style={[styles.aboutText, { color: isDark ? '#f1f5f9' : '#334155' }]}>
-              Bries was created to provide a free, privacy-first, ad-free, and open-source alternative to current weather apps. It relies primarily on the Open-Meteo API, requiring no personal data tracking. Optional tide information requires a free, user-provided Stormglass API key.
+              {i18n.t('aboutText')}
             </Text>
             
             <TouchableOpacity onPress={() => Linking.openURL('https://github.com/wdekker/bries')} style={styles.linkButton}>
-              <Text style={styles.linkText}>View Source on GitHub</Text>
+              <Text style={styles.linkText}>{i18n.t('viewSource')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity onPress={() => Linking.openURL('http://dekker.dev/contact')} style={styles.linkButton}>
-              <Text style={styles.linkText}>Contact Developer</Text>
+              <Text style={styles.linkText}>{i18n.t('contactDeveloper')}</Text>
             </TouchableOpacity>
           </View>
           </ScrollView>

@@ -1,15 +1,15 @@
-import { Sun, Cloud, CloudSun, CloudFog, CloudDrizzle, CloudRain, CloudSnow, CloudLightning } from 'lucide-react-native';
+import { Sun, Moon, Cloud, CloudSun, CloudMoon, CloudFog, CloudDrizzle, CloudRain, CloudSnow, CloudLightning } from 'lucide-react-native';
 
-export const getWeatherInfo = (code: number) => {
-  if (code === 0) return { icon: Sun, label: 'Clear Sky' };
-  if (code === 1 || code === 2) return { icon: CloudSun, label: 'Partly Cloudy' }; 
+export const getWeatherInfo = (code: number, isDay: boolean = true) => {
+  if (code === 0) return { icon: isDay ? Sun : Moon, label: 'Clear Sky' };
+  if (code === 1 || code === 2) return { icon: isDay ? CloudSun : CloudMoon, label: 'Partly Cloudy' }; 
   if (code === 3) return { icon: Cloud, label: 'Overcast' };
   if (code === 45 || code === 48) return { icon: CloudFog, label: 'Fog' };
   if (code >= 51 && code <= 55) return { icon: CloudDrizzle, label: 'Drizzle' };
   if (code >= 61 && code <= 65) return { icon: CloudRain, label: 'Rain' };
   if (code >= 71 && code <= 77) return { icon: CloudSnow, label: 'Snow' };
   if (code >= 95 && code <= 99) return { icon: CloudLightning, label: 'Thunderstorm' };
-  return { icon: Sun, label: 'Clear' };
+  return { icon: isDay ? Sun : Moon, label: 'Clear' };
 };
 
 import { WindSpeedUnit } from '../types/weather';
@@ -74,7 +74,8 @@ export function generateHourlyItems(hourly: any, daily: any, startIndex: number,
     if (isMidnight && index > 0) {
       timeStr = date.toLocaleDateString(undefined, { weekday: 'short' });
     }
-    const info = getWeatherInfo(hourly.weathercode[actualIndex]);
+    const isDay = hourly.is_day ? hourly.is_day[actualIndex] === 1 : true;
+    const info = getWeatherInfo(hourly.weathercode[actualIndex], isDay);
     const precip = hourly.precipitation_probability ? hourly.precipitation_probability[actualIndex] : 0;
     const wind = hourly.windspeed_10m ? hourly.windspeed_10m[actualIndex] : 0;
     const humidity = hourly.relativehumidity_2m ? hourly.relativehumidity_2m[actualIndex] : 0;

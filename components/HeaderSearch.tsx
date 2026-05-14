@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform, Animated, Easing } from 'react-native';
 import { Search, MapPin, X, Settings as SettingsIcon, RefreshCcw } from 'lucide-react-native';
+import { i18n } from '../utils/i18n';
 
 interface HeaderSearchProps {
   isDark: boolean;
@@ -57,7 +58,7 @@ export function HeaderSearch({
             <Search size={20} color={subTextColor} />
             <TextInput
               style={[styles.searchInput, { color: textColor }, Platform.OS === 'web' && { outlineStyle: 'none' } as any]}
-              placeholder="Search city..."
+              placeholder={i18n.t('searchCity')}
               placeholderTextColor={subTextColor}
               value={searchQuery}
               onChangeText={setSearchQuery}

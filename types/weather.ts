@@ -7,6 +7,7 @@ export interface WeatherData {
     temperature: number;
     windspeed: number;
     weathercode: number;
+    is_day: number;
     time: string;
   };
   hourly: {
@@ -18,6 +19,7 @@ export interface WeatherData {
     relativehumidity_2m: number[];
     uv_index: number[];
     apparent_temperature: number[];
+    is_day: number[];
   };
   daily: {
     time: string[];
@@ -33,6 +35,7 @@ export interface LocationState {
   lat: number;
   lon: number;
   city: string;
+  isAutoLocation?: boolean;
 }
 
 export type TemperatureUnit = 'C' | 'F';

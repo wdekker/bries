@@ -3,6 +3,7 @@ import { Platform, AppState, AppStateStatus } from 'react-native';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { WeatherData, LocationState, TemperatureUnit, WindSpeedUnit, TideData } from '../types/weather';
+import { i18n, initI18n, setLanguage, LANGUAGE_KEY } from '../utils/i18n';
 
 const CACHE_KEY = '@weather_cache';
 const UNIT_KEY = '@weather_unit';
@@ -21,6 +22,7 @@ export function useWeather() {
   const [cityName, setCityName] = useState('Locating...');
   const [lastFetchedTime, setLastFetchedTime] = useState<Date | null>(null);
   const [locationState, setLocationState] = useState<LocationState | null>(null);
+  const [language, setLanguageState] = useState(i18n.locale);
   
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,7 +62,7 @@ export function useWeather() {
       const unitParam = activeUnit === 'F' ? '&temperature_unit=fahrenheit' : '';
       
       const res = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weathercode,precipitation_probability,windspeed_10m,relativehumidity_2m,uv_index,apparent_temperature&timezone=auto&forecast_days=14${unitParam}`,
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weathercode,precipitation_probability,windspeed_10m,relativehumidity_2m,uv_index,apparent_temperature,is_day&timezone=auto&forecast_days=14${unitParam}`,
         { cache: 'no-store' }
       );
       if (!res.ok) throw new Error('Network response was not ok');
@@ -70,7 +72,7 @@ export function useWeather() {
       setWeatherData(data);
       setLastFetchedTime(now);
       setCityName(city);
-      setLocationState({ lat, lon, city });
+      setLocationState(prev => ({ lat, lon, city, isAutoLocation: prev ? prev.isAutoLocation : false }));
       setLoading(false);
 
       try {
@@ -143,6 +145,7 @@ export function useWeather() {
     setSearchQuery('');
     setSearchResults([]);
     setLoading(true);
+    setLocationState({ lat: city.latitude, lon: city.longitude, city: city.name, isAutoLocation: false });
     await fetchWeather(city.latitude, city.longitude, city.name);
   };
 
@@ -174,6 +177,7 @@ export function useWeather() {
             city = reverseGeocode[0].city || reverseGeocode[0].region || 'Local Weather';
           }
         }
+        setLocationState({ lat, lon, city, isAutoLocation: true });
         await fetchWeather(lat, lon, city);
       } else {
         alert("Location permission denied. Please allow location access.");
@@ -247,10 +251,17 @@ export function useWeather() {
     } catch (e) {}
   };
 
+  const changeLanguage = async (lang: string) => {
+    await setLanguage(lang);
+    setLanguageState(i18n.locale);
+  };
+
   useEffect(() => {
     let intervalId: ReturnType<typeof setInterval>;
 
     const initData = async () => {
+      await initI18n();
+      setLanguageState(i18n.locale);
       let loadedUnit: TemperatureUnit = 'C';
       try {
         const savedUnit = await AsyncStorage.getItem(UNIT_KEY);
@@ -296,7 +307,7 @@ export function useWeather() {
           const cached = JSON.parse(cachedStr);
           setWeatherData(cached.data);
           setCityName(cached.city);
-          setLocationState({ lat: cached.lat, lon: cached.lon, city: cached.city });
+          setLocationState({ lat: cached.lat, lon: cached.lon, city: cached.city, isAutoLocation: false });
           setLastFetchedTime(new Date(cached.time));
           setLoading(false); 
         }
@@ -349,6 +360,7 @@ export function useWeather() {
         }
       }
       
+      setLocationState(prev => prev ? prev : { lat: lat!, lon: lon!, city, isAutoLocation: true });
       await fetchWeather(lat!, lon!, city, loadedUnit);
 
     };
@@ -363,9 +375,27 @@ export function useWeather() {
       fetchWeather(locationState.lat, locationState.lon, locationState.city);
     }, 900000);
     
-    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+    const handleAppStateChange = async (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active') {
-        fetchWeather(locationState.lat, locationState.lon, locationState.city);
+        if (locationState.isAutoLocation) {
+          try {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status === 'granted') {
+              const locationPromise = Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced, maximumAge: 300000 });
+              const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Location timeout')), 5000));
+              let location = await Promise.race([locationPromise, timeoutPromise]) as Location.LocationObject;
+              const lat = location.coords.latitude;
+              const lon = location.coords.longitude;
+              fetchWeather(lat, lon, locationState.city);
+            } else {
+              fetchWeather(locationState.lat, locationState.lon, locationState.city);
+            }
+          } catch(e) {
+            fetchWeather(locationState.lat, locationState.lon, locationState.city);
+          }
+        } else {
+          fetchWeather(locationState.lat, locationState.lon, locationState.city);
+        }
       }
     };
     
@@ -408,5 +438,7 @@ export function useWeather() {
     stormglassApiKey,
     saveTideApiKey,
     tideData,
+    language,
+    changeLanguage,
   };
 }
