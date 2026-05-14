@@ -47,5 +47,6 @@ jest.mock('lucide-react-native', () => ({
   ChevronUp: 'ChevronUpIcon',
   Calendar: 'CalendarIcon',
   Thermometer: 'ThermometerIcon',
-  Droplets: 'DropletsIcon'
+  Droplets: 'DropletsIcon',
+  RefreshCcw: 'RefreshCcwIcon'
 }));

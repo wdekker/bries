@@ -87,7 +87,7 @@ export function HeaderSearch({
                 <RefreshCcw size={22} color={textColor} />
               </Animated.View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
+            <TouchableOpacity testID="calendar-button" onPress={() => setShowDatePicker(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
               <Calendar size={22} color={textColor} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setShowSettings(true)} style={[styles.iconBtn, { backgroundColor: cardBg }]}>
@@ -111,7 +111,7 @@ export function HeaderSearch({
         </View>
       )}
 
-      {showDatePicker && (
+      {showDatePicker && Platform.OS !== 'web' && (
         <DateTimePicker
           value={selectedDate || new Date()}
           mode="date"
@@ -124,6 +124,29 @@ export function HeaderSearch({
             }
           }}
         />
+      )}
+
+      {showDatePicker && Platform.OS === 'web' && (
+        <View style={{ backgroundColor: activeCardBg, padding: 15, borderRadius: 16, marginBottom: 15, alignItems: 'center' }}>
+          <Text style={{ color: textColor, marginBottom: 10, fontWeight: '600' }}>{i18n.t('selectDate')}</Text>
+          {React.createElement('input', {
+            type: 'date',
+            max: new Date().toISOString().split('T')[0],
+            defaultValue: selectedDate ? selectedDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+            onChange: (e: any) => {
+              if (e.target.value) {
+                const d = new Date(e.target.value);
+                d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+                setSelectedDate(d);
+                setShowDatePicker(false);
+              }
+            },
+            style: { padding: 10, borderRadius: 8, border: 'none', fontSize: 16, width: '100%', maxWidth: 250, outline: 'none' }
+          })}
+          <TouchableOpacity onPress={() => setShowDatePicker(false)} style={{ marginTop: 15, paddingVertical: 8, paddingHorizontal: 24, backgroundColor: 'rgba(0,0,0,0.1)', borderRadius: 20 }}>
+            <Text style={{ color: textColor, fontWeight: '600' }}>{i18n.t('cancel')}</Text>
+          </TouchableOpacity>
+        </View>
       )}
 
       {isSearchExpanded && searchResults.length > 0 && (
