@@ -22,7 +22,6 @@ export default function HomeScreen() {
     error,
     isOffline,
     refreshing,
-    cityName,
     lastFetchedTime,
     isSearchExpanded,
     setIsSearchExpanded,
@@ -30,10 +29,6 @@ export default function HomeScreen() {
     setSearchQuery,
     searchResults,
     setSearchResults,
-    unit,
-    windUnit,
-    showSunEvents,
-    showMoonPhase,
     showSettings,
     setShowSettings,
     handleSelectCity,
@@ -43,11 +38,8 @@ export default function HomeScreen() {
     toggleWindUnit,
     toggleSunEvents,
     toggleMoonPhase,
-    showTides,
     toggleShowTides,
-    stormglassApiKey,
     saveTideApiKey,
-    tideData,
     language,
     changeLanguage,
     selectedDate,
@@ -91,20 +83,12 @@ export default function HomeScreen() {
       <SettingsModal 
         visible={showSettings} 
         onClose={() => setShowSettings(false)} 
-        unit={unit} 
         onToggleUnit={toggleUnit} 
-        windUnit={windUnit}
         onToggleWindUnit={toggleWindUnit}
-        showSunEvents={showSunEvents}
         onToggleSunEvents={toggleSunEvents}
-        showMoonPhase={showMoonPhase}
         onToggleMoonPhase={toggleMoonPhase}
-        showTides={showTides}
         onToggleTides={toggleShowTides}
-        stormglassApiKey={stormglassApiKey}
         onChangeApiKey={saveTideApiKey}
-        isDark={isDark} 
-        language={language}
         onChangeLanguage={changeLanguage}
       />
 
@@ -133,37 +117,9 @@ export default function HomeScreen() {
           language={language}
         />
 
-        <CurrentWeather 
-          weatherData={weatherData}
-          cityName={cityName}
-          lastFetchedTime={lastFetchedTime}
-          showMoonPhase={showMoonPhase}
-          showTides={showTides}
-          tideData={tideData}
-          isDark={isDark}
-          windUnit={windUnit}
-          selectedDate={selectedDate}
-        />
-
-        <HourlyForecast 
-          hourly={weatherData.hourly}
-          daily={weatherData.daily}
-          currentHourString={weatherData.current_weather.time}
-          windUnit={windUnit}
-          showSunEvents={showSunEvents}
-          tideData={tideData}
-          isDark={isDark}
-        />
-
-        <DailyForecast 
-          daily={weatherData.daily}
-          hourly={weatherData.hourly}
-          windUnit={windUnit}
-          showSunEvents={showSunEvents}
-          showMoonPhase={showMoonPhase}
-          tideData={tideData}
-          isDark={isDark}
-        />
+        <CurrentWeather />
+        <HourlyForecast />
+        <DailyForecast />
 
       </ScrollView>
     </LinearGradient>

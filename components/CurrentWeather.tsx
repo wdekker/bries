@@ -1,23 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, useColorScheme } from 'react-native';
 import { Wind, Moon, Waves } from 'lucide-react-native';
 import { getWeatherInfo, formatWindSpeed, getMoonPhaseInfo, getLunarPhase } from '../utils/weather';
-import { WeatherData, WindSpeedUnit, TideData } from '../types/weather';
+import { useWeatherStore } from '../store/weatherStore';
 import { i18n } from '../utils/i18n';
 
-interface CurrentWeatherProps {
-  weatherData: WeatherData;
-  cityName: string;
-  lastFetchedTime: Date | null;
-  showMoonPhase: boolean;
-  showTides: boolean;
-  tideData: TideData | null;
-  isDark: boolean;
-  windUnit: WindSpeedUnit;
-  selectedDate: Date | null;
-}
+export const CurrentWeather = React.memo(function CurrentWeather() {
+  const isDark = useColorScheme() === 'dark';
+  const weatherData = useWeatherStore(state => state.weatherData);
+  const cityName = useWeatherStore(state => state.cityName);
+  const lastFetchedTime = useWeatherStore(state => state.lastFetchedTime);
+  const showMoonPhase = useWeatherStore(state => state.showMoonPhase);
+  const showTides = useWeatherStore(state => state.showTides);
+  const tideData = useWeatherStore(state => state.tideData);
+  const windUnit = useWeatherStore(state => state.windUnit);
+  const selectedDate = useWeatherStore(state => state.selectedDate);
 
-export const CurrentWeather = React.memo(function CurrentWeather({ weatherData, cityName, lastFetchedTime, showMoonPhase, showTides, tideData, isDark, windUnit, selectedDate }: CurrentWeatherProps) {
+  if (!weatherData) return null;
+
   const isDay = weatherData.current_weather.is_day === 1;
   const currentInfo = getWeatherInfo(weatherData.current_weather.weathercode, isDay);
   const CurrentIcon = currentInfo.icon;

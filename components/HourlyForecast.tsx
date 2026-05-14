@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
 import { Sunrise, Sunset, Wind, ChevronDown, ChevronUp, Droplets, Umbrella, Thermometer, Sun, Waves } from 'lucide-react-native';
 import { formatWindSpeed, generateHourlyItems } from '../utils/weather';
-import { WeatherData, WindSpeedUnit, TideData } from '../types/weather';
+import { useWeatherStore } from '../store/weatherStore';
 import { i18n } from '../utils/i18n';
 
-export function HourlyScrollList({ items, windUnit, isDark }: { items: any[], windUnit: WindSpeedUnit, isDark: boolean }) {
+export function HourlyScrollList({ items }: { items: any[] }) {
+  const isDark = useColorScheme() === 'dark';
+  const windUnit = useWeatherStore(state => state.windUnit);
   const [showDetails, setShowDetails] = useState(false);
   const textColor = isDark ? '#f8fafc' : '#ffffff';
   const subTextColor = isDark ? '#cbd5e1' : '#e0f2fe';
@@ -91,17 +93,17 @@ export function HourlyScrollList({ items, windUnit, isDark }: { items: any[], wi
   );
 }
 
-interface HourlyForecastProps {
-  hourly: WeatherData['hourly'];
-  daily: WeatherData['daily'];
-  currentHourString: string;
-  windUnit: WindSpeedUnit;
-  showSunEvents: boolean;
-  tideData: TideData | null;
-  isDark: boolean;
-}
+export const HourlyForecast = React.memo(function HourlyForecast() {
+  const isDark = useColorScheme() === 'dark';
+  const weatherData = useWeatherStore(state => state.weatherData);
+  const showSunEvents = useWeatherStore(state => state.showSunEvents);
+  const tideData = useWeatherStore(state => state.tideData);
 
-export const HourlyForecast = React.memo(function HourlyForecast({ hourly, daily, currentHourString, windUnit, showSunEvents, tideData, isDark }: HourlyForecastProps) {
+  if (!weatherData) return null;
+
+  const hourly = weatherData.hourly;
+  const daily = weatherData.daily;
+  const currentHourString = weatherData.current_weather.time;
   const textColor = isDark ? '#f8fafc' : '#ffffff';
 
   let startHourIndexToday = 0;
@@ -121,7 +123,7 @@ export const HourlyForecast = React.memo(function HourlyForecast({ hourly, daily
   return (
     <View style={styles.hourlyContainer}>
       <Text style={[styles.hourlyTitle, { color: textColor }]}>{i18n.t('today')}</Text>
-      <HourlyScrollList items={items} windUnit={windUnit} isDark={isDark} />
+      <HourlyScrollList items={items} />
     </View>
   );
 });

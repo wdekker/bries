@@ -1,31 +1,33 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking, Switch, Platform, TextInput, ScrollView } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking, Switch, Platform, TextInput, ScrollView, useColorScheme } from 'react-native';
 import { X, Download, Sunrise, Moon, Waves, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { TemperatureUnit, WindSpeedUnit } from '../types/weather';
 import { usePWAInstall } from '../hooks/usePWAInstall';
 import { i18n } from '../utils/i18n';
+import { useWeatherStore } from '../store/weatherStore';
 
 interface SettingsModalProps {
   visible: boolean;
   onClose: () => void;
-  unit: TemperatureUnit;
   onToggleUnit: (unit: TemperatureUnit) => void;
-  windUnit: WindSpeedUnit;
   onToggleWindUnit: (unit: WindSpeedUnit) => void;
-  showSunEvents: boolean;
   onToggleSunEvents: (value: boolean) => void;
-  showMoonPhase: boolean;
   onToggleMoonPhase: (value: boolean) => void;
-  showTides: boolean;
   onToggleTides: (value: boolean) => void;
-  stormglassApiKey: string;
   onChangeApiKey: (value: string) => void;
-  isDark: boolean;
-  language: string;
   onChangeLanguage: (lang: string) => void;
 }
 
-export const SettingsModal = React.memo(function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, showSunEvents, onToggleSunEvents, showMoonPhase, onToggleMoonPhase, showTides, onToggleTides, stormglassApiKey, onChangeApiKey, isDark, language, onChangeLanguage }: SettingsModalProps) {
+export const SettingsModal = React.memo(function SettingsModal({ visible, onClose, onToggleUnit, onToggleWindUnit, onToggleSunEvents, onToggleMoonPhase, onToggleTides, onChangeApiKey, onChangeLanguage }: SettingsModalProps) {
+  const isDark = useColorScheme() === 'dark';
+  const unit = useWeatherStore(state => state.unit);
+  const windUnit = useWeatherStore(state => state.windUnit);
+  const showSunEvents = useWeatherStore(state => state.showSunEvents);
+  const showMoonPhase = useWeatherStore(state => state.showMoonPhase);
+  const showTides = useWeatherStore(state => state.showTides);
+  const stormglassApiKey = useWeatherStore(state => state.stormglassApiKey);
+  const language = useWeatherStore(state => state.language);
+  
   const { isInstallable, promptInstall } = usePWAInstall();
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
 

@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
 import { Moon } from 'lucide-react-native';
 import { getWeatherInfo, generateHourlyItems, getMoonPhaseInfo, getLunarPhase } from '../utils/weather';
-import { WeatherData, WindSpeedUnit, TideData } from '../types/weather';
 import { HourlyScrollList } from './HourlyForecast';
+import { useWeatherStore } from '../store/weatherStore';
 import { i18n } from '../utils/i18n';
 
-interface DailyForecastProps {
-  daily: WeatherData['daily'];
-  hourly: WeatherData['hourly'];
-  windUnit: WindSpeedUnit;
-  showSunEvents: boolean;
-  showMoonPhase: boolean;
-  tideData: TideData | null;
-  isDark: boolean;
-}
-
-export const DailyForecast = React.memo(function DailyForecast({ daily, hourly, windUnit, showSunEvents, showMoonPhase, tideData, isDark }: DailyForecastProps) {
+export const DailyForecast = React.memo(function DailyForecast() {
+  const isDark = useColorScheme() === 'dark';
+  const weatherData = useWeatherStore(state => state.weatherData);
+  const showSunEvents = useWeatherStore(state => state.showSunEvents);
+  const showMoonPhase = useWeatherStore(state => state.showMoonPhase);
+  const tideData = useWeatherStore(state => state.tideData);
   const [expandedDayIndex, setExpandedDayIndex] = useState<number | null>(null);
+
+  if (!weatherData) return null;
+
+  const daily = weatherData.daily;
+  const hourly = weatherData.hourly;
 
   const textColor = isDark ? '#f8fafc' : '#ffffff';
   const subTextColor = isDark ? '#cbd5e1' : '#e0f2fe';
@@ -36,10 +36,6 @@ export const DailyForecast = React.memo(function DailyForecast({ daily, hourly, 
 
     return { index, day: dayStr, date: dateStr, temp: `${maxTemp}° / ${minTemp}°`, icon: info.icon, moonPhaseStr };
   });
-
-  const getHourlyForDay = (dayIndex: number) => {
-    return generateHourlyItems(hourly, daily, dayIndex * 24, 24, false, showSunEvents, tideData);
-  };
 
   return (
     <View style={styles.forecastContainer}>
@@ -82,7 +78,7 @@ export const DailyForecast = React.memo(function DailyForecast({ daily, hourly, 
             
             {isExpanded && (
               <View style={styles.expandedHourlyContainer}>
-                <HourlyScrollList items={getHourlyForDay(item.index)} windUnit={windUnit} isDark={isDark} />
+                <HourlyScrollList items={generateHourlyItems(hourly, daily, item.index * 24, 24, false, showSunEvents, tideData)} />
               </View>
             )}
           </View>
