@@ -38,17 +38,17 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
 
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
-      <View key={language} style={styles.modalOverlay}>
+      <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { backgroundColor: isDark ? '#1e293b' : '#ffffff' }]}>
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: isDark ? '#ffffff' : '#000000' }]}>{i18n.t('settings')}</Text>
+            <Text style={[styles.modalTitle, { color: isDark ? '#ffffff' : '#000000' }]}>{i18n.t('settings', { locale: language })}</Text>
             <TouchableOpacity onPress={onClose}>
               <X size={24} color={isDark ? '#cbd5e1' : '#64748b'} />
             </TouchableOpacity>
           </View>
           
           <ScrollView style={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
-            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', zIndex: 2 }]}>{i18n.t('language')}</Text>
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', zIndex: 2 }]}>{i18n.t('language', { locale: language })}</Text>
             
             <View style={{ zIndex: 10, marginBottom: 10 }}>
               <TouchableOpacity 
@@ -82,7 +82,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
               )}
             </View>
 
-            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 16 }]}>{i18n.t('temperatureUnit')}</Text>
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 16 }]}>{i18n.t('temperatureUnit', { locale: language })}</Text>
           <View style={styles.unitToggleRow}>
             <TouchableOpacity 
               style={[
@@ -92,7 +92,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
               ]}
               onPress={() => onToggleUnit('C')}
             >
-              <Text style={{ color: unit === 'C' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>{i18n.t('celsius')}</Text>
+              <Text style={{ color: unit === 'C' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>{i18n.t('celsius', { locale: language })}</Text>
             </TouchableOpacity>
             <TouchableOpacity 
               style={[
@@ -102,11 +102,11 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
               ]}
               onPress={() => onToggleUnit('F')}
             >
-              <Text style={{ color: unit === 'F' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>{i18n.t('fahrenheit')}</Text>
+              <Text style={{ color: unit === 'F' ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600' }}>{i18n.t('fahrenheit', { locale: language })}</Text>
             </TouchableOpacity>
           </View>
 
-          <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 16 }]}>{i18n.t('windSpeedUnit')}</Text>
+          <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 16 }]}>{i18n.t('windSpeedUnit', { locale: language })}</Text>
           <View style={styles.unitToggleRow}>
             <TouchableOpacity 
               style={[
@@ -144,24 +144,24 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
 
           {isInstallable && (
             <View style={styles.aboutContainer}>
-              <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>{i18n.t('appInstallation')}</Text>
+              <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>{i18n.t('appInstallation', { locale: language })}</Text>
               <TouchableOpacity 
                 onPress={promptInstall} 
                 style={[styles.linkButton, { backgroundColor: '#38bdf8', flexDirection: 'row', justifyContent: 'center' }]}
               >
                 <Download size={18} color="#ffffff" style={{ marginRight: 8 }} />
-                <Text style={[styles.linkText, { color: '#ffffff' }]}>{i18n.t('installBries')}</Text>
+                <Text style={[styles.linkText, { color: '#ffffff' }]}>{i18n.t('installBries', { locale: language })}</Text>
               </TouchableOpacity>
             </View>
           )}
 
           <View style={styles.aboutContainer}>
-            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>{i18n.t('timelineEvents')}</Text>
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>{i18n.t('timelineEvents', { locale: language })}</Text>
             
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Sunrise size={20} color={isDark ? '#fbbf24' : '#d97706'} style={{ marginRight: 8 }} />
-                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>{i18n.t('sunriseAndSunset')}</Text>
+                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>{i18n.t('sunriseAndSunset', { locale: language })}</Text>
               </View>
               <Switch
                 value={showSunEvents}
@@ -175,7 +175,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Moon size={20} color={isDark ? '#e2e8f0' : '#475569'} style={{ marginRight: 8 }} />
-                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>{i18n.t('moonPhase')}</Text>
+                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>{i18n.t('moonPhase', { locale: language })}</Text>
               </View>
               <Switch
                 value={showMoonPhase}
@@ -188,7 +188,7 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: showTides ? 8 : 8 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Waves size={20} color={isDark ? '#93c5fd' : '#3b82f6'} style={{ marginRight: 8 }} />
-                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>{i18n.t('tideEvents')}</Text>
+                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>{i18n.t('tideEvents', { locale: language })}</Text>
               </View>
               <Switch
                 value={showTides}
@@ -218,17 +218,17 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
           </View>
 
           <View style={[styles.aboutContainer, isInstallable ? { marginTop: 0 } : {}]}>
-            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 10 }]}>{i18n.t('aboutBries')}</Text>
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 10 }]}>{i18n.t('aboutBries', { locale: language })}</Text>
             <Text style={[styles.aboutText, { color: isDark ? '#f1f5f9' : '#334155' }]}>
-              {i18n.t('aboutText')}
+              {i18n.t('aboutText', { locale: language })}
             </Text>
             
             <TouchableOpacity onPress={() => Linking.openURL('https://github.com/wdekker/bries')} style={styles.linkButton}>
-              <Text style={styles.linkText}>{i18n.t('viewSource')}</Text>
+              <Text style={styles.linkText}>{i18n.t('viewSource', { locale: language })}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity onPress={() => Linking.openURL('http://dekker.dev/contact')} style={styles.linkButton}>
-              <Text style={styles.linkText}>{i18n.t('contactDeveloper')}</Text>
+              <Text style={styles.linkText}>{i18n.t('contactDeveloper', { locale: language })}</Text>
             </TouchableOpacity>
           </View>
           </ScrollView>
