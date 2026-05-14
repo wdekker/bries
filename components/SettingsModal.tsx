@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking, Switch, Platform, TextInput, ScrollView } from 'react-native';
-import { X, Download, Sunrise, Moon, Waves } from 'lucide-react-native';
+import { X, Download, Sunrise, Moon, Waves, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { TemperatureUnit, WindSpeedUnit } from '../types/weather';
 import { usePWAInstall } from '../hooks/usePWAInstall';
 import { i18n } from '../utils/i18n';
@@ -27,6 +27,14 @@ interface SettingsModalProps {
 
 export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, onToggleWindUnit, showSunEvents, onToggleSunEvents, showMoonPhase, onToggleMoonPhase, showTides, onToggleTides, stormglassApiKey, onChangeApiKey, isDark, language, onChangeLanguage }: SettingsModalProps) {
   const { isInstallable, promptInstall } = usePWAInstall();
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+
+  const languageNames = {
+    en: 'English',
+    de: 'Deutsch',
+    fr: 'Français',
+    nl: 'Nederlands'
+  };
 
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
@@ -40,23 +48,38 @@ export function SettingsModal({ visible, onClose, unit, onToggleUnit, windUnit, 
           </View>
           
           <ScrollView style={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
-            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b' }]}>{i18n.t('language')}</Text>
-            <View style={[styles.unitToggleRow, { flexWrap: 'wrap', gap: 8 }]}>
-              {['system', 'en', 'de', 'fr', 'nl'].map(lang => (
-                <TouchableOpacity 
-                  key={lang}
-                  style={[
-                    styles.unitBtn, 
-                    language === lang ? { backgroundColor: '#38bdf8' } : { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' },
-                    { minWidth: '30%', paddingVertical: 10 }
-                  ]}
-                  onPress={() => onChangeLanguage(lang)}
-                >
-                  <Text style={{ color: language === lang ? '#ffffff' : (isDark ? '#ffffff' : '#000000'), fontWeight: '600', fontSize: 13 }}>
-                    {lang === 'system' ? i18n.t('system') : lang.toUpperCase()}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+            <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', zIndex: 2 }]}>{i18n.t('language')}</Text>
+            
+            <View style={{ zIndex: 10, marginBottom: 10 }}>
+              <TouchableOpacity 
+                style={[styles.dropdownHeader, { backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }]}
+                onPress={() => setLangDropdownOpen(!langDropdownOpen)}
+                activeOpacity={0.7}
+              >
+                <Text style={{ color: isDark ? '#ffffff' : '#000000', fontSize: 15, fontWeight: '500' }}>
+                  {languageNames[language as keyof typeof languageNames] || 'English'}
+                </Text>
+                {langDropdownOpen ? <ChevronUp size={20} color={isDark ? '#cbd5e1' : '#64748b'} /> : <ChevronDown size={20} color={isDark ? '#cbd5e1' : '#64748b'} />}
+              </TouchableOpacity>
+
+              {langDropdownOpen && (
+                <View style={[styles.dropdownList, { backgroundColor: isDark ? '#334155' : '#f8fafc' }]}>
+                  {['en', 'de', 'fr', 'nl'].map(lang => (
+                    <TouchableOpacity 
+                      key={lang}
+                      style={[styles.dropdownItem, language === lang && { backgroundColor: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(56, 189, 248, 0.1)' }]}
+                      onPress={() => {
+                        onChangeLanguage(lang);
+                        setLangDropdownOpen(false);
+                      }}
+                    >
+                      <Text style={{ color: language === lang ? '#38bdf8' : (isDark ? '#ffffff' : '#000000'), fontSize: 15, fontWeight: language === lang ? '600' : '400' }}>
+                        {languageNames[lang as keyof typeof languageNames]}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
             </View>
 
             <Text style={[styles.modalLabel, { color: isDark ? '#cbd5e1' : '#64748b', marginTop: 16 }]}>{i18n.t('temperatureUnit')}</Text>
@@ -295,5 +318,22 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     fontSize: 13,
+  },
+  dropdownHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 12,
+  },
+  dropdownList: {
+    marginTop: 4,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  dropdownItem: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   }
 });

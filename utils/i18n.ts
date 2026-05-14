@@ -51,7 +51,15 @@ const translations = {
     installBries: 'Install Bries to Home Screen',
     dailyForecast: 'Daily Forecast',
     language: 'Language',
-    system: 'System Default'
+    system: 'System Default',
+    newMoon: 'New Moon',
+    waxingCrescent: 'Waxing Crescent',
+    firstQuarter: 'First Quarter',
+    waxingGibbous: 'Waxing Gibbous',
+    fullMoon: 'Full Moon',
+    waningGibbous: 'Waning Gibbous',
+    lastQuarter: 'Last Quarter',
+    waningCrescent: 'Waning Crescent'
   },
   de: {
     clearSky: 'Klarer Himmel',
@@ -101,7 +109,15 @@ const translations = {
     installBries: 'Bries installieren',
     dailyForecast: 'Tagesvorhersage',
     language: 'Sprache',
-    system: 'Systemstandard'
+    system: 'Systemstandard',
+    newMoon: 'Neumond',
+    waxingCrescent: 'Zunehmende Sichel',
+    firstQuarter: 'Erstes Viertel',
+    waxingGibbous: 'Zunehmender Mond',
+    fullMoon: 'Vollmond',
+    waningGibbous: 'Abnehmender Mond',
+    lastQuarter: 'Letztes Viertel',
+    waningCrescent: 'Abnehmende Sichel'
   },
   fr: {
     clearSky: 'Ciel Dégagé',
@@ -151,7 +167,15 @@ const translations = {
     installBries: 'Installer Bries',
     dailyForecast: 'Prévisions Quotidiennes',
     language: 'Langue',
-    system: 'Par défaut du système'
+    system: 'Par défaut du système',
+    newMoon: 'Nouvelle Lune',
+    waxingCrescent: 'Premier Croissant',
+    firstQuarter: 'Premier Quartier',
+    waxingGibbous: 'Lune Gibbeuse Croissante',
+    fullMoon: 'Pleine Lune',
+    waningGibbous: 'Lune Gibbeuse Décroissante',
+    lastQuarter: 'Dernier Quartier',
+    waningCrescent: 'Dernier Croissant'
   },
   nl: {
     clearSky: 'Heldere Lucht',
@@ -201,7 +225,15 @@ const translations = {
     installBries: 'Bries Installeren',
     dailyForecast: 'Dagelijkse Verwachting',
     language: 'Taal',
-    system: 'Systeemtaal'
+    system: 'Systeemtaal',
+    newMoon: 'Nieuwe Maan',
+    waxingCrescent: 'Wassende Maan',
+    firstQuarter: 'Eerste Kwartier',
+    waxingGibbous: 'Wassende Maan (bijna vol)',
+    fullMoon: 'Volle Maan',
+    waningGibbous: 'Afnemende Maan',
+    lastQuarter: 'Laatste Kwartier',
+    waningCrescent: 'Asgrauwe Maan'
   }
 };
 
@@ -212,27 +244,23 @@ i18n.defaultLocale = 'en';
 export const LANGUAGE_KEY = '@app_language';
 
 export const initI18n = async () => {
+  const supportedLanguages = ['en', 'de', 'fr', 'nl'];
+  
   try {
     const savedLang = await AsyncStorage.getItem(LANGUAGE_KEY);
     if (savedLang) {
       i18n.locale = savedLang;
     } else {
-      const deviceLanguage = getLocales()[0]?.languageCode;
-      i18n.locale = deviceLanguage || 'en';
+      const deviceLanguage = getLocales()[0]?.languageCode || 'en';
+      i18n.locale = supportedLanguages.includes(deviceLanguage) ? deviceLanguage : 'en';
     }
   } catch (e) {
-    const deviceLanguage = getLocales()[0]?.languageCode;
-    i18n.locale = deviceLanguage || 'en';
+    const deviceLanguage = getLocales()[0]?.languageCode || 'en';
+    i18n.locale = supportedLanguages.includes(deviceLanguage) ? deviceLanguage : 'en';
   }
 };
 
 export const setLanguage = async (lang: string) => {
-  if (lang === 'system') {
-    const deviceLanguage = getLocales()[0]?.languageCode;
-    i18n.locale = deviceLanguage || 'en';
-    await AsyncStorage.removeItem(LANGUAGE_KEY);
-  } else {
-    i18n.locale = lang;
-    await AsyncStorage.setItem(LANGUAGE_KEY, lang);
-  }
+  i18n.locale = lang;
+  await AsyncStorage.setItem(LANGUAGE_KEY, lang);
 };

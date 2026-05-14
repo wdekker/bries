@@ -1,15 +1,16 @@
 import { Sun, Moon, Cloud, CloudSun, CloudMoon, CloudFog, CloudDrizzle, CloudRain, CloudSnow, CloudLightning } from 'lucide-react-native';
+import { i18n } from './i18n';
 
 export const getWeatherInfo = (code: number, isDay: boolean = true) => {
-  if (code === 0) return { icon: isDay ? Sun : Moon, label: 'Clear Sky' };
-  if (code === 1 || code === 2) return { icon: isDay ? CloudSun : CloudMoon, label: 'Partly Cloudy' }; 
-  if (code === 3) return { icon: Cloud, label: 'Overcast' };
-  if (code === 45 || code === 48) return { icon: CloudFog, label: 'Fog' };
-  if (code >= 51 && code <= 55) return { icon: CloudDrizzle, label: 'Drizzle' };
-  if (code >= 61 && code <= 65) return { icon: CloudRain, label: 'Rain' };
-  if (code >= 71 && code <= 77) return { icon: CloudSnow, label: 'Snow' };
-  if (code >= 95 && code <= 99) return { icon: CloudLightning, label: 'Thunderstorm' };
-  return { icon: isDay ? Sun : Moon, label: 'Clear' };
+  if (code === 0) return { icon: isDay ? Sun : Moon, label: i18n.t('clearSky') };
+  if (code === 1 || code === 2) return { icon: isDay ? CloudSun : CloudMoon, label: i18n.t('partlyCloudy') }; 
+  if (code === 3) return { icon: Cloud, label: i18n.t('overcast') };
+  if (code === 45 || code === 48) return { icon: CloudFog, label: i18n.t('fog') };
+  if (code >= 51 && code <= 55) return { icon: CloudDrizzle, label: i18n.t('drizzle') };
+  if (code >= 61 && code <= 65) return { icon: CloudRain, label: i18n.t('rain') };
+  if (code >= 71 && code <= 77) return { icon: CloudSnow, label: i18n.t('snow') };
+  if (code >= 95 && code <= 99) return { icon: CloudLightning, label: i18n.t('thunderstorm') };
+  return { icon: isDay ? Sun : Moon, label: i18n.t('clear') };
 };
 
 import { WindSpeedUnit } from '../types/weather';
@@ -41,14 +42,14 @@ export function formatWindSpeed(speedKmh: number, unit: WindSpeedUnit): string {
 }
 
 export function getMoonPhaseInfo(phase: number): string {
-  if (phase <= 0.03 || phase >= 0.97) return 'New Moon';
-  if (phase < 0.22) return 'Waxing Crescent';
-  if (phase <= 0.28) return 'First Quarter';
-  if (phase < 0.47) return 'Waxing Gibbous';
-  if (phase <= 0.53) return 'Full Moon';
-  if (phase < 0.72) return 'Waning Gibbous';
-  if (phase <= 0.78) return 'Last Quarter';
-  return 'Waning Crescent';
+  if (phase <= 0.03 || phase >= 0.97) return i18n.t('newMoon');
+  if (phase < 0.22) return i18n.t('waxingCrescent');
+  if (phase <= 0.28) return i18n.t('firstQuarter');
+  if (phase < 0.47) return i18n.t('waxingGibbous');
+  if (phase <= 0.53) return i18n.t('fullMoon');
+  if (phase < 0.72) return i18n.t('waningGibbous');
+  if (phase <= 0.78) return i18n.t('lastQuarter');
+  return i18n.t('waningCrescent');
 }
 
 export function getLunarPhase(date: Date): number {
